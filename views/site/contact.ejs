@@ -9,6 +9,7 @@
         <% if (s.email) { %><li><svg class="ic"><use href="#i-mail"/></svg><div><span>Email</span><a href="mailto:<%= s.email %>"><%= s.email %></a></div></li><% } %>
         <% if (s.address) { %><li><svg class="ic"><use href="#i-pin"/></svg><div><span>Office</span><p><%= s.address %></p><% if (s.hours) { %><p class="muted"><%= s.hours %></p><% } %></div></li><% } %>
       </ul>
+      <% if (s.socialContact && social.length) { %><div class="follow-block"><h2 class="h3">Follow us</h2><%- include('../partials/social', { cls: 'social-big', labels: true }) %></div><% } %>
       <% const map = h.mapSrc(s.mapEmbed); if (map) { %><div class="map"><iframe src="<%= map %>" title="Office location" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div><% } %>
     </div>
     <div class="card-form"><h2 class="h3">Send us a message</h2><%- include('../partials/leadform', { type: 'contact' }) %></div>

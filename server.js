@@ -73,6 +73,9 @@ app.use((req, res, next) => {
   res.locals.path = req.path;
   res.locals.year = new Date().getFullYear();
   res.locals.price = (p) => p.priceLabel || h.formatPrice(p.price, s.currencyFormat) || 'Price on request';
+  res.locals.social = h.socialLinks(s);
+  // settings saved before the Social media tab existed have no on/off flags yet — default them to on
+  for (const k of ['socialHeader', 'socialFooter', 'socialContact', 'shareButtons']) if (s[k] === undefined) s[k] = true;
   res.locals.menu = h.lines(s.menu).map(([label, href]) => ({ label, href }));
   res.locals.footerPages = db.filter('pages', p => p.published && p.showInFooter);
   res.locals.services = db.filter('services', x => x.published).sort((a, b) => (a.order || 0) - (b.order || 0));
@@ -352,7 +355,7 @@ function orgSchema(s, base) {
     '@context': 'https://schema.org', '@type': s.businessType || 'RealEstateAgent', name: s.siteName, url: base,
     logo: base + (s.logo || '/public/img/logo-full.jpg'), telephone: s.phone, email: s.email,
     address: { '@type': 'PostalAddress', streetAddress: s.address, addressCountry: 'IN' },
-    sameAs: [s.facebook, s.instagram, s.youtube, s.linkedin, s.twitter].filter(Boolean),
+    sameAs: h.socialLinks(s).map(x => x.url),
   };
 }
 

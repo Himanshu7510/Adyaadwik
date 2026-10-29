@@ -2,6 +2,18 @@
 <% if (s.announcement) { %>
 <div class="announce"><% if (s.announcementLink) { %><a href="<%= s.announcementLink %>"><%= s.announcement %></a><% } else { %><%= s.announcement %><% } %></div>
 <% } %>
+<% if (s.socialHeader && (social.length || s.phone || s.email)) { %>
+<div class="topbar">
+  <div class="wrap topbar-inner">
+    <div class="topbar-contact">
+      <% if (s.phone) { %><a href="tel:+<%= h.digits(s.phone) %>" data-track="call"><svg class="ic"><use href="#i-phone"/></svg><%= s.phone %></a><% } %>
+      <% if (s.email) { %><a href="mailto:<%= s.email %>"><svg class="ic"><use href="#i-mail"/></svg><%= s.email %></a><% } %>
+      <% if (s.hours) { %><span class="topbar-hours"><%= s.hours %></span><% } %>
+    </div>
+    <%- include('social', { cls: 'social-top' }) %>
+  </div>
+</div>
+<% } %>
 <header class="site-header<%= locals.overlay ? ' is-overlay' : '' %>" id="top">
   <div class="wrap header-inner">
     <a class="brand" href="/" aria-label="<%= s.siteName %> home">

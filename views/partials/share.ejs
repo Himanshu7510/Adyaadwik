@@ -1,0 +1,11 @@
+<% if (s.shareButtons) { const u = encodeURIComponent(meta.canonical), t = encodeURIComponent(locals.title || meta.title); %>
+<div class="share-row">
+  <span class="share-label"><svg class="ic"><use href="#i-share"/></svg>Share</span>
+  <a href="https://wa.me/?text=<%= t %>%20<%= u %>" target="_blank" rel="noopener" aria-label="Share on WhatsApp" data-track="share_whatsapp"><svg class="ic"><use href="#i-whatsapp"/></svg></a>
+  <a href="https://www.facebook.com/sharer/sharer.php?u=<%= u %>" target="_blank" rel="noopener" aria-label="Share on Facebook" data-track="share_facebook"><svg class="ic"><use href="#i-facebook"/></svg></a>
+  <a href="https://twitter.com/intent/tweet?url=<%= u %>&text=<%= t %>" target="_blank" rel="noopener" aria-label="Share on X" data-track="share_x"><svg class="ic"><use href="#i-twitter"/></svg></a>
+  <a href="https://www.linkedin.com/sharing/share-offsite/?url=<%= u %>" target="_blank" rel="noopener" aria-label="Share on LinkedIn" data-track="share_linkedin"><svg class="ic"><use href="#i-linkedin"/></svg></a>
+  <a href="https://t.me/share/url?url=<%= u %>&text=<%= t %>" target="_blank" rel="noopener" aria-label="Share on Telegram" data-track="share_telegram"><svg class="ic"><use href="#i-telegram"/></svg></a>
+  <button type="button" data-copy-link="<%= meta.canonical %>" aria-label="Copy link"><svg class="ic"><use href="#i-link"/></svg></button>
+</div>
+<% } %>

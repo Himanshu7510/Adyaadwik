@@ -25,6 +25,7 @@
       <div class="side-card sticky">
         <h2 class="h3">Ask about <%= p.title %></h2>
         <%- include('../partials/leadform', { type: 'enquiry', compact: true, message: 'Interested in ' + p.title, button: 'Get details' }) %>
+        <%- include('../partials/share', { title: p.title }) %>
         <% if (p.brochure) { %><a class="link brochure" href="<%= p.brochure %>" target="_blank" data-track="brochure"><svg class="ic"><use href="#i-download"/></svg>Download brochure</a><% } %>
       </div>
     </aside>

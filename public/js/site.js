@@ -75,6 +75,17 @@
     calc.addEventListener('input', run); calc.addEventListener('change', run); run();
   }
 
+  // copy link button
+  $$('[data-copy-link]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var url = b.dataset.copyLink;
+      var done = function () { b.classList.add('is-copied'); setTimeout(function () { b.classList.remove('is-copied'); }, 1500); };
+      if (navigator.share && matchMedia('(pointer: coarse)').matches) { navigator.share({ url: url, title: document.title }).catch(function () {}); return; }
+      if (navigator.clipboard) navigator.clipboard.writeText(url).then(done, function () { prompt('Copy this link', url); });
+      else prompt('Copy this link', url);
+    });
+  });
+
   // analytics helper
   function track(name, params) {
     params = params || {};

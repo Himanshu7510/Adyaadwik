@@ -7,11 +7,7 @@
         <% if (!s.logoLight) { %><span class="brand-word"><%= s.siteName %></span><% } %>
       </a>
       <p><%= s.footerAbout %></p>
-      <div class="social">
-        <% [['facebook','Facebook'],['instagram','Instagram'],['youtube','YouTube'],['linkedin','LinkedIn'],['twitter','X']].forEach(([k,l]) => { if (s[k]) { %>
-          <a href="<%= s[k] %>" target="_blank" rel="noopener" aria-label="<%= l %>"><svg class="ic"><use href="#i-<%= k %>"/></svg></a>
-        <% } }) %>
-      </div>
+      <% if (s.socialFooter && social.length) { %><p class="follow-label">Follow us</p><%- include('social', { cls: 'social-footer' }) %><% } %>
     </div>
     <div>
       <h3>Services</h3>
@@ -47,7 +43,7 @@
   <% if (s.phone) { %><a class="float-call" data-track="call" href="tel:+<%= h.digits(s.phone) %>" aria-label="Call us"><svg class="ic"><use href="#i-phone"/></svg></a><% } %>
 </div>
 
-<script src="/public/js/site.js?v=3" defer></script>
+<script src="/public/js/site.js?v=4" defer></script>
 <% if (s.linkedinPartnerId) { %><noscript><img height="1" width="1" style="display:none" alt="" src="https://px.ads.linkedin.com/collect/?pid=<%= s.linkedinPartnerId %>&fmt=gif"></noscript><% } %>
 <%- s.customBodyEnd || '' %>
 </body>

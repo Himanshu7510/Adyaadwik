@@ -9,12 +9,7 @@
   <% if (p.cover) { %><figure class="wrap post-cover"><img src="<%= p.cover %>" alt="" onerror="this.parentNode.remove()"></figure><% } %>
   <div class="wrap narrow-wrap prose prose-lg post-body"><%- p.body %></div>
   <% if (h.tags(p.tags).length) { %><div class="wrap narrow-wrap chips"><% h.tags(p.tags).forEach(t => { %><span><%= t %></span><% }) %></div><% } %>
-  <div class="wrap narrow-wrap share">
-    <span>Share</span>
-    <a href="https://wa.me/?text=<%= encodeURIComponent(p.title + ' ' + meta.canonical) %>" target="_blank" rel="noopener" aria-label="Share on WhatsApp"><svg class="ic"><use href="#i-whatsapp"/></svg></a>
-    <a href="https://www.facebook.com/sharer/sharer.php?u=<%= encodeURIComponent(meta.canonical) %>" target="_blank" rel="noopener" aria-label="Share on Facebook"><svg class="ic"><use href="#i-facebook"/></svg></a>
-    <a href="https://www.linkedin.com/sharing/share-offsite/?url=<%= encodeURIComponent(meta.canonical) %>" target="_blank" rel="noopener" aria-label="Share on LinkedIn"><svg class="ic"><use href="#i-linkedin"/></svg></a>
-  </div>
+  <div class="wrap narrow-wrap post-share"><%- include('../partials/share', { title: p.title }) %></div>
 </article>
 <% if (more.length) { %><section class="section section-stone"><div class="wrap"><h2>Keep reading</h2><div class="grid-3"><% more.forEach(x => { %><%- include('../partials/postcard', { p: x }) %><% }) %></div></div></section><% } %>
 <%- include('../partials/cta') %>

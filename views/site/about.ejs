@@ -6,6 +6,7 @@
     <aside class="mv">
       <% if (s.mission) { %><div><h2 class="h3">Mission</h2><p><%= s.mission %></p></div><% } %>
       <% if (s.vision) { %><div><h2 class="h3">Vision</h2><p><%= s.vision %></p></div><% } %>
+      <% if (s.socialContact && social.length) { %><div><h2 class="h3">Follow us</h2><%- include('../partials/social', { cls: 'social-big' }) %></div><% } %>
     </aside>
   </div>
 </section>

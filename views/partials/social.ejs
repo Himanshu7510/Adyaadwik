@@ -1,0 +1,7 @@
+<%# Social profile icons. Options: cls (extra class), labels (show names) %>
+<% const icons = { whatsappChannel: 'whatsapp', googleBusiness: 'google' }; %>
+<% if (social.length) { %>
+<ul class="social-list <%= locals.cls || '' %>">
+  <% social.forEach(x => { %><li><a href="<%= x.url %>" target="_blank" rel="noopener" aria-label="<%= x.label %>" title="<%= x.label %>" data-track="social_<%= x.key %>"><svg class="ic"><use href="#i-<%= icons[x.key] || x.key %>"/></svg><% if (locals.labels) { %><span><%= x.label %></span><% } %></a></li><% }) %>
+</ul>
+<% } %>
