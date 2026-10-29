@@ -1,0 +1,48 @@
+<%
+  const titleKey = ['title', 'name', 'heading', 'question'].find(k => col.fields.some(f => f.name === k));
+  const fmt = (it, c) => {
+    const v = it[c];
+    if (c === 'published') return v ? '<span class="pill pill-ok">Live</span>' : '<span class="pill">Draft</span>';
+    if (c === 'price') return v ? h.formatPrice(v, s.currencyFormat) : (it.priceLabel || '—');
+    if (c === 'progress') return v === '' || v == null ? '—' : v + '%';
+    if (c === 'status' || c === 'stage') return `<span class="pill pill-${String(v).toLowerCase().replace(/\s+/g,'-')}">${h.stripHtml(v) || '—'}</span>`;
+    if (c === 'rating') return '★'.repeat(Number(v) || 0);
+    if (c === 'date') return h.fmtDate(v);
+    return String(v ?? '').replace(/[&<>]/g, x => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[x])) || '—';
+  };
+  const label = c => ((col.fields.find(f => f.name === c) || {}).label || c).replace(/\s*\(.*\)$/, '');
+  const thumbKey = ['cover', 'image', 'photo', 'logo'].find(k => col.fields.some(f => f.name === k));
+%>
+<%- include('top', { pageTitle: col.label, actions: `<a class="b b-gold" href="/admin/c/${colName}/new"><svg class="ic"><use href="#i-plus"/></svg>Add ${col.singular.toLowerCase()}</a>` }) %>
+<div class="toolbar">
+  <form method="get" class="search"><svg class="ic"><use href="#i-search"/></svg><input name="q" value="<%= q %>" placeholder="Search <%= col.label.toLowerCase() %>"></form>
+  <span class="muted"><%= items.length %> <%= items.length === 1 ? col.singular.toLowerCase() : col.label.toLowerCase() %></span>
+</div>
+<% if (!items.length) { %>
+  <div class="panel empty-state"><h2><%= q ? 'Nothing matches “' + q + '”' : 'No ' + col.label.toLowerCase() + ' yet' %></h2><p><a class="b b-gold" href="/admin/c/<%= colName %>/new">Add the first one</a></p></div>
+<% } else { %>
+<div class="panel table-wrap">
+  <table class="tbl">
+    <thead><tr><% if (thumbKey) { %><th class="th-thumb"></th><% } %><% col.columns.forEach(c => { %><th><%= label(c) %></th><% }) %><th></th></tr></thead>
+    <tbody>
+      <% items.forEach(it => { %>
+      <tr>
+        <% if (thumbKey) { %><td class="td-thumb"><% if (it[thumbKey]) { %><img src="<%= it[thumbKey] %>" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><% } %></td><% } %>
+        <% col.columns.forEach(c => { %>
+          <td <%- c === titleKey ? 'class="td-title"' : '' %>>
+            <% if (c === titleKey) { %><a href="/admin/c/<%= colName %>/<%= it.id %>"><%= it[c] || '(untitled)' %></a><% if (it.featured) { %> <span class="pill pill-gold">Featured</span><% } %>
+            <% } else if (c === 'published') { %><form method="post" action="/admin/c/<%= colName %>/<%= it.id %>/toggle" class="inline"><input type="hidden" name="_csrf" value="<%= csrf %>"><button class="linkbtn" title="Click to switch"><%- fmt(it, c) %></button></form>
+            <% } else { %><%- fmt(it, c) %><% } %>
+          </td>
+        <% }) %>
+        <td class="td-actions">
+          <a class="icon-btn" href="/admin/c/<%= colName %>/<%= it.id %>" title="Edit"><svg class="ic"><use href="#i-pen"/></svg></a>
+          <% if (col.publicPath && it.slug && it.published) { %><a class="icon-btn" href="<%= col.publicPath + it.slug %>" target="_blank" title="View"><svg class="ic"><use href="#i-eye"/></svg></a><% } %>
+        </td>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+<% } %>
+<%- include('bottom') %>

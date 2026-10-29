@@ -1,0 +1,204 @@
+<%- include('../partials/header', { overlay: true }) %>
+<%
+  const heroSlides = slides.length ? slides : [{ heading: s.heroHeading, subheading: s.heroText, image: s.heroImage, buttonText: 'Explore properties', buttonLink: '/properties' }];
+  const stats = h.lines(s.stats);
+  const typeIcons = { 'Flat / Apartment': 'building', 'Residential Plot': 'plot', 'Independent House / Villa': 'home', 'Builder Floor': 'layers', 'Commercial Shop': 'key', 'Office Space': 'building', 'Commercial Plot': 'plot', 'Farm House / Land': 'compass', 'Warehouse': 'building' };
+%>
+<section class="hero" aria-label="Introduction">
+  <div class="hero-slides" data-slider>
+    <% heroSlides.forEach((sl, i) => { %>
+    <div class="hero-slide<%= i === 0 ? ' is-active' : '' %>">
+      <img src="<%= sl.image || '/public/img/placeholder.svg' %>" alt="" <%= i === 0 ? 'fetchpriority=high' : 'loading=lazy' %> onerror="this.onerror=null;this.src='/public/img/placeholder.svg'">
+    </div>
+    <% }) %>
+  </div>
+  <div class="hero-shade"></div>
+  <div class="wrap hero-content">
+    <% if (s.heroKicker) { %><p class="hero-kicker"><%= s.heroKicker %></p><% } %>
+    <% heroSlides.forEach((sl, i) => { %>
+    <div class="hero-copy<%= i === 0 ? ' is-active' : '' %>" data-slide-copy>
+      <<%= i === 0 ? 'h1' : 'p' %> class="hero-title"><%= sl.heading %></<%= i === 0 ? 'h1' : 'p' %>>
+      <% if (sl.subheading) { %><p class="hero-text"><%= sl.subheading %></p><% } %>
+      <% if (sl.buttonText) { %><a class="btn btn-gold" href="<%= sl.buttonLink || '/properties' %>"><%= sl.buttonText %></a><% } %>
+    </div>
+    <% }) %>
+    <% if (heroSlides.length > 1) { %>
+    <div class="hero-dots" role="tablist" aria-label="Banners">
+      <% heroSlides.forEach((sl, i) => { %><button role="tab" aria-label="Banner <%= i + 1 %>" aria-selected="<%= i === 0 %>" data-dot="<%= i %>"></button><% }) %>
+    </div>
+    <% } %>
+  </div>
+
+  <div class="wrap finder-wrap">
+    <div class="finder" data-tabs>
+      <div class="finder-tabs" role="tablist">
+        <button role="tab" aria-selected="true" data-tab="buy"><svg class="ic"><use href="#i-key"/></svg>Buy</button>
+        <button role="tab" aria-selected="false" data-tab="rent"><svg class="ic"><use href="#i-home"/></svg>Rent</button>
+        <button role="tab" aria-selected="false" data-tab="build"><svg class="ic"><use href="#i-crane"/></svg>Build</button>
+        <button role="tab" aria-selected="false" data-tab="sell"><svg class="ic"><use href="#i-handshake"/></svg>Sell</button>
+      </div>
+      <% ['buy','rent'].forEach((tab, ti) => { %>
+      <form class="finder-panel" action="/properties" method="get" data-panel="<%= tab %>" <%= ti ? 'hidden' : '' %>>
+        <input type="hidden" name="purpose" value="<%= tab === 'buy' ? 'Sale' : 'Rent' %>">
+        <label class="ffield"><span>City</span><select name="city"><option value="">All cities</option><% cities.forEach(c => { %><option><%= c %></option><% }) %></select></label>
+        <label class="ffield"><span>Property type</span><select name="type"><option value="">Any type</option><% propertyTypes.forEach(c => { %><option><%= c %></option><% }) %></select></label>
+        <% if (tab === 'buy') { %>
+        <label class="ffield"><span>Budget</span><select name="budget"><option value="">Any budget</option><% h.lines(s.budgets).forEach((b, i) => { %><option value="<%= i %>"><%= b[2] %></option><% }) %></select></label>
+        <% } else { %>
+        <label class="ffield"><span>BHK</span><select name="bhk"><option value="">Any</option><option value="1">1 BHK</option><option value="2">2 BHK</option><option value="3">3 BHK</option><option value="4">4+ BHK</option></select></label>
+        <% } %>
+        <label class="ffield ffield-q"><span>Locality or project</span><input name="q" placeholder="e.g. Sector 137"></label>
+        <button class="btn btn-ink finder-go" type="submit"><svg class="ic"><use href="#i-search"/></svg>Search</button>
+      </form>
+      <% }) %>
+      <div class="finder-panel finder-panel-cta" data-panel="build" hidden>
+        <p>Turnkey house construction from <strong><%= (h.lines(s.constructionRates)[0] || [])[1] ? '₹' + Number(h.lines(s.constructionRates)[0][1]).toLocaleString('en-IN') + ' per sq ft' : 'a fixed rate' %></strong>, with an itemised BOQ and stage-wise payments.</p>
+        <a class="btn btn-ink" href="/construction#estimate">Estimate my cost</a>
+      </div>
+      <div class="finder-panel finder-panel-cta" data-panel="sell" hidden>
+        <p>We buy flats, houses and plots directly. Get a <strong>written offer within 72 hours</strong> of a site visit.</p>
+        <a class="btn btn-ink" href="/sell-property">Get a valuation</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<% if (stats.length) { %>
+<section class="stats" aria-label="Avyaadwik in numbers">
+  <div class="wrap stats-row">
+    <% stats.forEach(([v, l]) => { %><div class="stat"><strong><%= v %></strong><span><%= l %></span></div><% }) %>
+  </div>
+</section>
+<% } %>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Find by property type</h2>
+      <a class="link" href="/properties">All listings <svg class="ic"><use href="#i-arrow"/></svg></a>
+    </div>
+    <div class="types">
+      <% propertyTypes.filter(t => counts[t] > 0).concat(propertyTypes.filter(t => !counts[t])).slice(0, 6).forEach(t => { %>
+      <a class="type-tile" href="/properties?type=<%= encodeURIComponent(t) %>">
+        <svg class="ic"><use href="#i-<%= typeIcons[t] || 'home' %>"/></svg>
+        <span class="type-name"><%= t %></span>
+        <span class="type-count"><%= counts[t] || 0 %> listed</span>
+      </a>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<% if (featured.length) { %>
+<section class="section section-stone">
+  <div class="wrap">
+    <div class="section-head">
+      <div><h2>Handpicked listings</h2><p>Title-checked and ready for a site visit this week.</p></div>
+      <a class="link" href="/properties">View all <svg class="ic"><use href="#i-arrow"/></svg></a>
+    </div>
+    <div class="grid-3">
+      <% featured.forEach(p => { %><%- include('../partials/card', { p }) %><% }) %>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<section class="section services-home">
+  <div class="wrap services-split">
+    <div class="services-intro">
+      <h2>One company for building, buying and selling</h2>
+      <p>Instead of juggling a contractor, a broker and a lawyer, work with one team that is answerable for the whole job.</p>
+      <a class="btn btn-outline" href="/services">All services</a>
+    </div>
+    <ul class="service-list">
+      <% services.forEach(sv => { %>
+      <li>
+        <a href="/services/<%= sv.slug %>">
+          <span class="service-ic"><svg class="ic"><use href="#i-<%= sv.icon || 'home' %>"/></svg></span>
+          <span class="service-txt"><strong><%= sv.title %></strong><span><%= sv.summary %></span></span>
+          <svg class="ic service-go"><use href="#i-arrow"/></svg>
+        </a>
+      </li>
+      <% }) %>
+    </ul>
+  </div>
+</section>
+
+<section class="section section-ink about-home">
+  <div class="wrap about-split">
+    <figure class="about-img"><img src="<%= s.aboutImage || '/public/img/placeholder.svg' %>" alt="" loading="lazy" onerror="this.onerror=null;this.src='/public/img/placeholder.svg'"></figure>
+    <div>
+      <h2><%= s.aboutHeading %></h2>
+      <div class="prose prose-light"><%- s.aboutText %></div>
+      <ul class="why">
+        <% h.lines(s.whyUs).forEach(([t, d]) => { %><li><svg class="ic"><use href="#i-check"/></svg><div><strong><%= t %></strong><span><%= d %></span></div></li><% }) %>
+      </ul>
+      <a class="btn btn-gold" href="/about">Our story</a>
+    </div>
+  </div>
+</section>
+
+<% const steps = h.lines(s.process); if (steps.length) { %>
+<section class="section">
+  <div class="wrap">
+    <div class="section-head"><div><h2>How we build your house</h2><p>The same five stages on every site, with a sign-off at each one.</p></div><a class="link" href="/construction">Construction details <svg class="ic"><use href="#i-arrow"/></svg></a></div>
+    <ol class="steps">
+      <% steps.forEach(([t, d], i) => { %><li><span class="step-n"><%= i + 1 %></span><strong><%= t %></strong><p><%= d %></p></li><% }) %>
+    </ol>
+  </div>
+</section>
+<% } %>
+
+<% if (s.showProjects && projects.length) { %>
+<section class="section section-stone">
+  <div class="wrap">
+    <div class="section-head"><div><h2>On site and delivered</h2><p>Live progress from the projects we are building.</p></div><a class="link" href="/projects">All projects <svg class="ic"><use href="#i-arrow"/></svg></a></div>
+    <div class="grid-3">
+      <% projects.forEach(p => { %><%- include('../partials/projectcard', { p }) %><% }) %>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<% if (s.showTestimonials && testimonials.length) { %>
+<section class="section">
+  <div class="wrap">
+    <h2 class="center">What our clients say</h2>
+    <div class="quotes">
+      <% testimonials.slice(0, 3).forEach(t => { %>
+      <figure class="quote">
+        <div class="stars" aria-label="<%= t.rating %> out of 5"><% for (let i = 0; i < (Number(t.rating) || 5); i++) { %><svg class="ic"><use href="#i-star"/></svg><% } %></div>
+        <blockquote><%= t.quote %></blockquote>
+        <figcaption>
+          <% if (t.photo) { %><img src="<%= t.photo %>" alt=""><% } else { %><span class="avatar"><%= h.initials(t.name) %></span><% } %>
+          <span><strong><%= t.name %></strong><%= t.role %></span>
+        </figcaption>
+      </figure>
+      <% }) %>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<% if (s.showPartners && partners.length) { %>
+<section class="partners" aria-label="Home loan partners">
+  <div class="wrap partners-row">
+    <span class="partners-label">Home loans through</span>
+    <% partners.forEach(p => { %><% if (p.logo) { %><img src="<%= p.logo %>" alt="<%= p.name %>" loading="lazy"><% } else { %><span class="partner-name"><%= p.name %></span><% } %><% }) %>
+  </div>
+</section>
+<% } %>
+
+<% if (s.showBlog && posts.length) { %>
+<section class="section">
+  <div class="wrap">
+    <div class="section-head"><div><h2>Guides before you sign</h2></div><a class="link" href="/blog">All articles <svg class="ic"><use href="#i-arrow"/></svg></a></div>
+    <div class="grid-3">
+      <% posts.forEach(p => { %><%- include('../partials/postcard', { p }) %><% }) %>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<%- include('../partials/cta') %>
+<%- include('../partials/footer') %>

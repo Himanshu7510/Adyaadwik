@@ -1,0 +1,25 @@
+<% const qs = new URLSearchParams(Object.entries(q).filter(([,v]) => v)).toString(); %>
+<%- include('top', { pageTitle: 'Leads', actions: `<a class="b b-line" href="/admin/leads.csv?${qs}"><svg class="ic"><use href="#i-download"/></svg>Export CSV</a>` }) %>
+<form class="toolbar" method="get">
+  <div class="search"><svg class="ic"><use href="#i-search"/></svg><input name="q" value="<%= q.q || '' %>" placeholder="Name, phone, locality…"></div>
+  <select name="type" onchange="this.form.submit()"><option value="">All types</option><% Object.entries(LEAD_TYPES).forEach(([k, l]) => { %><option value="<%= k %>" <%= q.type === k ? 'selected' : '' %>><%= l %></option><% }) %></select>
+  <select name="status" onchange="this.form.submit()"><option value="">All statuses</option><% LEAD_STATUSES.forEach(st => { %><option <%= q.status === st ? 'selected' : '' %>><%= st %></option><% }) %></select>
+  <span class="muted"><%= leads.length %> lead<%= leads.length === 1 ? '' : 's' %></span>
+</form>
+<% if (!leads.length) { %><div class="panel empty-state"><h2>No leads match</h2><p class="muted">Enquiries, construction quotes and sell requests from the website are collected here.</p></div><% } else { %>
+<div class="panel table-wrap"><table class="tbl">
+  <thead><tr><th>Received</th><th>Name</th><th>Phone</th><th>Type</th><th>About</th><th>Source</th><th>Status</th></tr></thead>
+  <tbody><% leads.forEach(l => { %>
+    <tr class="<%= l.status === 'New' ? 'is-new' : '' %>">
+      <td><%= new Date(l.createdAt).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) %></td>
+      <td class="td-title"><a href="/admin/leads/<%= l.id %>"><%= l.name %></a><% if (l.email) { %><br><span class="muted small"><%= l.email %></span><% } %></td>
+      <td><a href="tel:<%= l.phone %>"><%= l.phone %></a></td>
+      <td><%= LEAD_TYPES[l.type] || l.type %></td>
+      <td class="muted"><%= l.propertyTitle || (l.details && [l.details.propertyType || l.details.workType, l.details.city].filter(Boolean).join(', ')) || h.excerpt(l.message, 40) %></td>
+      <td class="muted small"><%= l.utm && l.utm.utm_source ? l.utm.utm_source + (l.utm.utm_campaign ? ' / ' + l.utm.utm_campaign : '') : (l.utm && l.utm.gclid ? 'Google Ads' : l.utm && l.utm.fbclid ? 'Facebook' : 'Website') %></td>
+      <td><span class="pill pill-<%= String(l.status).toLowerCase().replace(/\s+/g,'-') %>"><%= l.status %></span></td>
+    </tr>
+  <% }) %></tbody>
+</table></div>
+<% } %>
+<%- include('bottom') %>

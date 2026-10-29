@@ -1,0 +1,46 @@
+<%
+  const t = locals.type || 'enquiry';
+  const btn = locals.button || ({ construction: 'Get my construction quote', sell: 'Request a valuation', contact: 'Send message', enquiry: 'Request a call back', requirement: 'Share my requirement' })[t] || 'Submit';
+  const multipart = t === 'sell';
+%>
+<form class="lead-form" method="post" action="/lead" data-lead-form <%- multipart ? 'enctype="multipart/form-data"' : '' %>>
+  <input type="hidden" name="type" value="<%= t %>">
+  <% if (locals.propertyId) { %><input type="hidden" name="propertyId" value="<%= propertyId %>"><% } %>
+  <input type="hidden" name="source" value="<%= req.originalUrl %>">
+  <div class="hp" aria-hidden="true"><label>Website <input name="website" tabindex="-1" autocomplete="off"></label></div>
+
+  <div class="fgrid">
+    <label class="field"><span>Your name</span><input name="name" required autocomplete="name" maxlength="120"></label>
+    <label class="field"><span>Mobile number</span><input name="phone" type="tel" required autocomplete="tel" inputmode="tel" pattern="[0-9+\s\-]{10,16}" placeholder="10-digit mobile"></label>
+    <label class="field <%= t === 'enquiry' ? 'span-2' : '' %>"><span>Email <em>(optional)</em></span><input name="email" type="email" autocomplete="email"></label>
+
+    <% if (t === 'construction') { %>
+      <label class="field"><span>Plot size</span><input name="plotSize" placeholder="e.g. 200 sq yd"></label>
+      <label class="field"><span>City</span><select name="city"><option value="">Select</option><% cities.forEach(c => { %><option><%= c %></option><% }) %><option>Other</option></select></label>
+      <label class="field"><span>Floors planned</span><select name="floors"><option>Ground + 1</option><option>Ground + 2</option><option>Stilt + 3</option><option>Stilt + 4</option><option>Other</option></select></label>
+      <label class="field"><span>Work required</span><select name="workType"><option>New house construction</option><option>Builder floor (for sale)</option><option>Commercial building</option><option>Renovation / interiors</option><option>Only drawings & approvals</option></select></label>
+      <label class="field span-2"><span>When do you want to start?</span><select name="startWhen"><option>Within 1 month</option><option>1–3 months</option><option>3–6 months</option><option>Just exploring costs</option></select></label>
+    <% } else if (t === 'sell') { %>
+      <label class="field"><span>Property type</span><select name="propertyType" required><% propertyTypes.forEach(c => { %><option><%= c %></option><% }) %></select></label>
+      <label class="field"><span>City</span><select name="city" required><option value="">Select</option><% cities.forEach(c => { %><option><%= c %></option><% }) %><option>Other</option></select></label>
+      <label class="field"><span>Locality / sector</span><input name="locality"></label>
+      <label class="field"><span>BHK <em>(if applicable)</em></span><select name="bhk"><option value="">—</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
+      <label class="field"><span>Area</span><input name="area" inputmode="decimal" placeholder="e.g. 1450"></label>
+      <label class="field"><span>Unit</span><select name="areaUnit"><option>sq ft</option><option>sq yd</option><option>gaj</option><option>acre</option></select></label>
+      <label class="field"><span>Expected price (₹)</span><input name="expectedPrice" inputmode="numeric" placeholder="e.g. 8500000"></label>
+      <label class="field"><span>I want to</span><select name="sellMode"><option>Sell directly to Avyaadwik</option><option>List it with Avyaadwik</option><option>Either — advise me</option></select></label>
+      <label class="field span-2 file-field"><span>Photos <em>(up to 8, optional)</em></span><input type="file" name="photos" accept="image/jpeg,image/png,image/webp" multiple></label>
+    <% } else if (t === 'requirement') { %>
+      <label class="field"><span>Looking for</span><select name="propertyType"><% propertyTypes.forEach(c => { %><option><%= c %></option><% }) %></select></label>
+      <label class="field"><span>Budget</span><select name="budget"><% h.lines(s.budgets).forEach(b => { %><option><%= b[2] %></option><% }) %></select></label>
+    <% } %>
+
+    <% if (t !== 'enquiry' || !locals.compact) { %>
+    <label class="field span-2"><span><%= t === 'sell' ? 'Anything else we should know?' : t === 'construction' ? 'Tell us about your plan' : 'Message' %> <em>(optional)</em></span><textarea name="message" rows="<%= locals.compact ? 2 : 3 %>"><%= locals.message || '' %></textarea></label>
+    <% } %>
+  </div>
+  <% if (s.recaptchaSiteKey) { %><div class="g-recaptcha" data-sitekey="<%= s.recaptchaSiteKey %>"></div><% } %>
+  <p class="form-error" role="alert" hidden></p>
+  <button class="btn btn-gold btn-block" type="submit"><%= btn %></button>
+  <p class="form-note">We call back within one working day. Your details stay with us.</p>
+</form>

@@ -1,0 +1,10 @@
+<%- include('../partials/header') %>
+<%- include('../partials/pagehead', { title: category || 'Property guides', crumbs: [['Blog']], lede: 'Practical notes from our engineers, legal desk and sales team.' }) %>
+<section class="section section-tight">
+  <div class="wrap">
+    <% if (categories.length > 1) { %><nav class="chips"><a href="/blog" <%= !category ? 'aria-current=page' : '' %>>All</a><% categories.forEach(c => { %><a href="/blog?category=<%= encodeURIComponent(c) %>" <%= category === c ? 'aria-current=page' : '' %>><%= c %></a><% }) %></nav><% } %>
+    <% if (!list.length) { %><div class="empty"><h2>No articles yet</h2></div><% } %>
+    <div class="grid-3"><% list.forEach(p => { %><%- include('../partials/postcard', { p }) %><% }) %></div>
+  </div>
+</section>
+<%- include('../partials/footer') %>

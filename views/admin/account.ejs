@@ -1,0 +1,14 @@
+<%- include('top', { pageTitle: 'My account' }) %>
+<form method="post" class="panel narrow">
+  <input type="hidden" name="_csrf" value="<%= csrf %>">
+  <div class="fields fields-1">
+    <div class="fld"><label>Name</label><input name="name" value="<%= user.name || '' %>"></div>
+    <div class="fld"><label>Email</label><input value="<%= user.email %>" disabled></div>
+    <h3 class="sub">Change password</h3>
+    <div class="fld"><label>Current password</label><input name="current" type="password" autocomplete="current-password"></div>
+    <div class="fld"><label>New password</label><input name="password" type="password" minlength="8" autocomplete="new-password"></div>
+    <div class="fld"><label>Confirm new password</label><input name="confirm" type="password" autocomplete="new-password"></div>
+  </div>
+  <button class="b b-gold">Update account</button>
+</form>
+<%- include('bottom') %>

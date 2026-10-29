@@ -1,0 +1,6 @@
+<article class="bcard">
+  <a class="bcard-media" href="/blog/<%= p.slug %>"><img src="<%= p.cover || '/public/img/placeholder.svg' %>" alt="" loading="lazy" onerror="this.onerror=null;this.src='/public/img/placeholder.svg'"></a>
+  <p class="bcard-meta"><%= p.category %><% if (p.date) { %> <span aria-hidden="true">/</span> <%= h.fmtDate(p.date) %><% } %></p>
+  <h3><a href="/blog/<%= p.slug %>"><%= p.title %></a></h3>
+  <p><%= p.excerpt %></p>
+</article>

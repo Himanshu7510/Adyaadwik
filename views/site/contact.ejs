@@ -1,0 +1,17 @@
+<%- include('../partials/header') %>
+<%- include('../partials/pagehead', { title: 'Contact us', crumbs: [['Contact']], lede: 'Call, WhatsApp, write or visit. We reply within one working day.' }) %>
+<section class="section section-tight">
+  <div class="wrap form-split">
+    <div>
+      <ul class="contact-cards">
+        <% if (s.phone) { %><li><svg class="ic"><use href="#i-phone"/></svg><div><span>Call</span><a href="tel:+<%= h.digits(s.phone) %>" data-track="call"><%= s.phone %></a><% if (s.phone2) { %><a href="tel:+<%= h.digits(s.phone2) %>"><%= s.phone2 %></a><% } %></div></li><% } %>
+        <% if (s.whatsapp) { %><li><svg class="ic"><use href="#i-whatsapp"/></svg><div><span>WhatsApp</span><a href="https://wa.me/<%= h.digits(s.whatsapp) %>" target="_blank" rel="noopener" data-track="whatsapp">Start a chat</a></div></li><% } %>
+        <% if (s.email) { %><li><svg class="ic"><use href="#i-mail"/></svg><div><span>Email</span><a href="mailto:<%= s.email %>"><%= s.email %></a></div></li><% } %>
+        <% if (s.address) { %><li><svg class="ic"><use href="#i-pin"/></svg><div><span>Office</span><p><%= s.address %></p><% if (s.hours) { %><p class="muted"><%= s.hours %></p><% } %></div></li><% } %>
+      </ul>
+      <% const map = h.mapSrc(s.mapEmbed); if (map) { %><div class="map"><iframe src="<%= map %>" title="Office location" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div><% } %>
+    </div>
+    <div class="card-form"><h2 class="h3">Send us a message</h2><%- include('../partials/leadform', { type: 'contact' }) %></div>
+  </div>
+</section>
+<%- include('../partials/footer') %>

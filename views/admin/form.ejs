@@ -1,0 +1,31 @@
+<%
+  const titleKey = ['title', 'name', 'heading', 'question'].find(k => col.fields.some(f => f.name === k));
+  const groups = {};
+  col.fields.forEach(f => { const g = f.group || 'Details'; (groups[g] = groups[g] || []).push(f); });
+  const viewUrl = !isNew && col.publicPath && item.slug && item.published ? col.publicPath + item.slug : '';
+%>
+<%- include('top', { pageTitle: isNew ? 'New ' + col.singular.toLowerCase() : (item[titleKey] || col.singular), actions: viewUrl ? `<a class="b b-line" href="${viewUrl}" target="_blank"><svg class="ic"><use href="#i-eye"/></svg>View on site</a>` : '' }) %>
+<p class="back"><a href="/admin/c/<%= colName %>"><svg class="ic"><use href="#i-left"/></svg>All <%= col.label.toLowerCase() %></a></p>
+<form method="post" action="/admin/c/<%= colName %><%= isNew ? '' : '/' + item.id %>" enctype="multipart/form-data" class="edit-form" data-dirty>
+  <input type="hidden" name="_csrf" value="<%= csrf %>">
+  <% Object.entries(groups).forEach(([g, fields]) => { %>
+  <section class="panel">
+    <h2 class="panel-title"><%= g === 'Details' ? col.singular + ' details' : g %></h2>
+    <% if (g === 'SEO') { %><div class="serp" data-serp><span class="serp-url"><%= (s.siteUrl || '').replace(/^https?:\/\//, '') %><%= col.publicPath || '/' %><span data-serp-slug><%= item.slug || '' %></span></span><span class="serp-title" data-serp-title><%= item.seoTitle || item[titleKey] || '' %></span><span class="serp-desc" data-serp-desc><%= item.seoDescription || item.summary || item.excerpt || '' %></span></div><% } %>
+    <div class="fields"><% fields.forEach(f => { %><%- include('field', { f, item }) %><% }) %></div>
+  </section>
+  <% }) %>
+  <div class="savebar">
+    <button class="b b-gold" type="submit">Save</button>
+    <button class="b b-line" type="submit" name="_after" value="list">Save &amp; close</button>
+    <% if (!isNew) { %><span class="muted small">Last saved <%= new Date(item.updatedAt).toLocaleString('en-IN') %></span><% } %>
+  </div>
+</form>
+<% if (!isNew) { %>
+<div class="danger-row">
+  <form method="post" action="/admin/c/<%= colName %>/<%= item.id %>/duplicate"><input type="hidden" name="_csrf" value="<%= csrf %>"><button class="b b-sm b-line"><svg class="ic"><use href="#i-copy"/></svg>Duplicate</button></form>
+  <form method="post" action="/admin/c/<%= colName %>/<%= item.id %>/delete" onsubmit="return confirm('Delete this <%= col.singular.toLowerCase() %> permanently?')"><input type="hidden" name="_csrf" value="<%= csrf %>"><button class="b b-sm b-danger"><svg class="ic"><use href="#i-trash"/></svg>Delete</button></form>
+</div>
+<% } %>
+<%- include('mediapicker') %>
+<%- include('bottom') %>

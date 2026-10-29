@@ -1,0 +1,13 @@
+<%- include('top', { pageTitle: isNew ? 'Add user' : (u.name || u.email) }) %>
+<p class="back"><a href="/admin/users"><svg class="ic"><use href="#i-left"/></svg>All users</a></p>
+<form method="post" class="panel narrow">
+  <input type="hidden" name="_csrf" value="<%= csrf %>">
+  <div class="fields fields-1">
+    <div class="fld"><label>Name</label><input name="name" value="<%= u.name || '' %>"></div>
+    <div class="fld"><label>Email</label><input name="email" type="email" value="<%= u.email || '' %>" required></div>
+    <div class="fld"><label>Role</label><select name="role"><option value="editor" <%= u.role === 'editor' ? 'selected' : '' %>>Editor</option><option value="admin" <%= u.role === 'admin' ? 'selected' : '' %>>Admin</option></select></div>
+    <div class="fld"><label><%= isNew ? 'Password' : 'New password (leave blank to keep)' %></label><input name="password" type="password" minlength="8" autocomplete="new-password" <%= isNew ? 'required' : '' %>></div>
+  </div>
+  <button class="b b-gold">Save user</button>
+</form>
+<%- include('bottom') %>

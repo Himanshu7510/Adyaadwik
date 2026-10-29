@@ -1,0 +1,26 @@
+<%- include('../partials/header') %>
+<section class="section thanks">
+  <div class="wrap narrow-wrap center">
+    <img src="/public/img/monogram.png" alt="" width="110" height="77">
+    <h1>Thank you — we have your <%= typeLabel.toLowerCase() %>.</h1>
+    <p class="lede-dark">An Avyaadwik advisor will call you within one working day<% if (s.hours) { %> (<%= s.hours %>)<% } %>.</p>
+    <p>Need us sooner? <% if (s.phone) { %><a href="tel:+<%= h.digits(s.phone) %>"><%= s.phone %></a><% } %><% if (s.whatsapp) { %> or <a href="https://wa.me/<%= h.digits(s.whatsapp) %>">WhatsApp us</a><% } %>.</p>
+    <div class="btn-row"><a class="btn btn-ink" href="/properties">Browse properties</a><a class="btn btn-outline" href="/">Back to home</a></div>
+  </div>
+</section>
+<script>
+  // Conversion events for GA4, Google Ads, Meta Pixel, LinkedIn and Tag Manager
+  (function () {
+    var type = <%- JSON.stringify(type) %>;
+    if (sessionStorage.getItem('avy_conv_' + location.search)) return;
+    try { sessionStorage.setItem('avy_conv_' + location.search, 1); } catch (e) {}
+    window.dataLayer.push({ event: 'generate_lead', lead_type: type });
+    if (window.gtag) {
+      gtag('event', 'generate_lead', { lead_type: type });
+      if (AVY.adsId && AVY.adsLabel) gtag('event', 'conversion', { send_to: AVY.adsId + '/' + AVY.adsLabel });
+    }
+    if (window.fbq) fbq('track', 'Lead', { content_category: type });
+    if (window.lintrk) lintrk('track', { conversion_id: 'lead' });
+  })();
+</script>
+<%- include('../partials/footer') %>

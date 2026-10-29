@@ -1,0 +1,13 @@
+<%- include('../partials/header') %>
+<%- include('../partials/pagehead', { title: p.title, image: p.cover, crumbs: [['Services', '/services'], [p.title]], lede: p.summary }) %>
+<section class="section section-tight">
+  <div class="wrap detail-layout">
+    <div class="detail-main">
+      <div class="prose"><%- p.description %></div>
+      <% if (h.tags(p.points).length) { %><h2 class="h3">What is included</h2><ul class="amenities"><% h.tags(p.points).forEach(a => { %><li><svg class="ic"><use href="#i-check"/></svg><%= a %></li><% }) %></ul><% } %>
+      <% if (faqs.length) { %><h2 class="h3">Common questions</h2><div class="faq-list"><% faqs.forEach(f => { %><details><summary><%= f.question %></summary><p><%= f.answer %></p></details><% }) %></div><% } %>
+    </div>
+    <aside class="detail-side"><div class="side-card sticky"><h2 class="h3">Talk to our team</h2><%- include('../partials/leadform', { type: p.ctaType || 'enquiry', compact: true, message: 'Enquiry about ' + p.title }) %></div></aside>
+  </div>
+</section>
+<%- include('../partials/footer') %>

@@ -1,0 +1,12 @@
+<%- include('top', { pageTitle: 'Users', actions: '<a class="b b-gold" href="/admin/users/new"><svg class="ic"><use href="#i-plus"/></svg>Add user</a>' }) %>
+<div class="panel note"><p><strong>Admin</strong> users can change settings, integrations and users. <strong>Editors</strong> can manage listings, content, media and leads.</p></div>
+<div class="panel table-wrap"><table class="tbl">
+  <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Last sign-in</th><th></th></tr></thead>
+  <tbody><% users.forEach(u => { %><tr>
+    <td class="td-title"><a href="/admin/users/<%= u.id %>"><%= u.name || '—' %></a></td><td><%= u.email %></td>
+    <td><span class="pill <%= u.role === 'admin' ? 'pill-gold' : '' %>"><%= u.role %></span></td>
+    <td class="muted"><%= u.lastLogin ? new Date(u.lastLogin).toLocaleString('en-IN') : 'Never' %></td>
+    <td class="td-actions"><% if (u.id !== user.id) { %><form method="post" action="/admin/users/<%= u.id %>/delete" onsubmit="return confirm('Delete this user?')"><input type="hidden" name="_csrf" value="<%= csrf %>"><button class="icon-btn" title="Delete"><svg class="ic"><use href="#i-trash"/></svg></button></form><% } %></td>
+  </tr><% }) %></tbody>
+</table></div>
+<%- include('bottom') %>

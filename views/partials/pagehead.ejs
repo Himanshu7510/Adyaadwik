@@ -1,0 +1,8 @@
+<section class="page-head<%= locals.image ? ' has-image' : '' %>">
+  <% if (locals.image) { %><img src="<%= image %>" alt="" onerror="this.remove()"><div class="page-head-shade"></div><% } %>
+  <div class="wrap">
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><% (locals.crumbs || []).forEach(c => { %><span aria-hidden="true">/</span><% if (c[1]) { %><a href="<%= c[1] %>"><%= c[0] %></a><% } else { %><span aria-current="page"><%= c[0] %></span><% } %><% }) %></nav>
+    <h1><%= title %></h1>
+    <% if (locals.lede) { %><p class="lede"><%= lede %></p><% } %>
+  </div>
+</section>

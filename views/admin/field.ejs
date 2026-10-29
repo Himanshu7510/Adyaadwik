@@ -1,0 +1,51 @@
+<% const v = item[f.name] ?? ''; const id = 'f_' + f.name; %>
+<div class="fld fld-<%= f.type %><%= ['richtext','gallery','textarea','lines','code','tags','image','file'].includes(f.type) ? ' fld-wide' : '' %>">
+  <% if (f.type === 'checkbox') { %>
+    <label class="switch"><input type="checkbox" name="<%= f.name %>" <%= v === true || v === 'true' ? 'checked' : '' %>><span class="switch-ui"></span><span><%= f.label %></span></label>
+  <% } else { %>
+    <label for="<%= id %>"><%= f.label %><% if (f.required) { %> <b class="req">*</b><% } %></label>
+    <% if (f.type === 'textarea') { %>
+      <textarea id="<%= id %>" name="<%= f.name %>" rows="3" <%- f.name.toLowerCase().includes('description') ? 'data-count="160"' : '' %>><%= v %></textarea>
+    <% } else if (f.type === 'lines' || f.type === 'code') { %>
+      <textarea id="<%= id %>" name="<%= f.name %>" rows="<%= f.type === 'code' ? 5 : 5 %>" class="<%= f.type === 'code' ? 'mono' : '' %>" spellcheck="false"><%= v %></textarea>
+    <% } else if (f.type === 'richtext') { %>
+      <div class="rte" data-rte="<%= id %>"><%- v %></div>
+      <textarea id="<%= id %>" name="<%= f.name %>" hidden><%= v %></textarea>
+    <% } else if (f.type === 'select' || f.type === 'relation') { const opts = fieldOptions(f); %>
+      <select id="<%= id %>" name="<%= f.name %>">
+        <% opts.forEach(o => { const [val, lab] = Array.isArray(o) ? o : [o, o || '—']; %><option value="<%= val %>" <%= String(v) === String(val) ? 'selected' : '' %>><%= lab %></option><% }) %>
+        <% if (v && !opts.some(o => String(Array.isArray(o) ? o[0] : o) === String(v))) { %><option selected><%= v %></option><% } %>
+      </select>
+    <% } else if (f.type === 'image' || f.type === 'file') { %>
+      <div class="imgfield">
+        <% if (f.type === 'image') { %><div class="imgprev"><% if (v) { %><img src="<%= v %>" alt="" onerror="this.style.opacity=.2"><% } else { %><svg class="ic"><use href="#i-image"/></svg><% } %></div><% } %>
+        <div class="imgctl">
+          <input id="<%= id %>" name="<%= f.name %>" value="<%= v %>" placeholder="Paste an image URL, upload, or pick from the library">
+          <div class="row">
+            <label class="b b-sm b-line"><input type="file" name="<%= f.name %>__file" accept="<%= f.type === 'image' ? 'image/*' : 'application/pdf,image/*' %>" hidden data-preview>Upload</label>
+            <button type="button" class="b b-sm b-line" data-pick="<%= id %>">Media library</button>
+            <% if (v) { %><button type="button" class="b b-sm b-ghost" data-clear="<%= id %>">Remove</button><% } %>
+          </div>
+        </div>
+      </div>
+    <% } else if (f.type === 'gallery') { const g = h.gallery(v); %>
+      <div class="gal" data-gal>
+        <div class="gal-grid"><% g.forEach(u => { %><figure data-url="<%= u %>"><img src="<%= u %>" alt="" onerror="this.style.opacity=.2"><button type="button" aria-label="Remove" data-gal-rm>×</button></figure><% }) %></div>
+        <textarea name="<%= f.name %>" hidden data-gal-value><%= g.join('\n') %></textarea>
+        <div class="row">
+          <label class="b b-sm b-line"><input type="file" name="<%= f.name %>__files" accept="image/*" multiple hidden data-gal-files>Upload photos</label>
+          <button type="button" class="b b-sm b-line" data-gal-url>Add image URL</button>
+          <span class="hint" data-gal-pending></span>
+        </div>
+      </div>
+    <% } else if (f.type === 'color') { %>
+      <div class="row"><input type="color" value="<%= v || '#000000' %>" oninput="this.nextElementSibling.value=this.value"><input id="<%= id %>" name="<%= f.name %>" value="<%= v %>" class="w-sm" oninput="this.previousElementSibling.value=this.value"></div>
+    <% } else { %>
+      <input id="<%= id %>" name="<%= f.name %>" value="<%= f.type === 'password' ? '' : v %>"
+        type="<%= ({ number: 'number', date: 'date', url: 'url', password: 'password' })[f.type] || 'text' %>"
+        <%- f.type === 'number' ? 'step="any"' : '' %> <%- f.type === 'password' && v ? 'placeholder="•••••••• saved — leave blank to keep"' : '' %>
+        <%- f.name === 'seoTitle' ? 'data-count="60"' : '' %> <%- f.type === 'slug' ? 'data-slug-from="f_' + f.from + '"' : '' %> <%- f.required ? 'required' : '' %>>
+    <% } %>
+  <% } %>
+  <% if (f.help) { %><p class="hint"><%= f.help %></p><% } %>
+</div>

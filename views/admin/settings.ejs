@@ -1,0 +1,27 @@
+<%- include('top', { pageTitle: 'Settings' }) %>
+<nav class="tabs">
+  <% Object.entries(settingsTabs).forEach(([k, t]) => { %><a href="/admin/settings/<%= k %>" <%= k === tabKey ? 'aria-current=page' : '' %>><%= t.label %></a><% }) %>
+</nav>
+<% const groups = {}; tab.fields.forEach(f => { const g = f.group || tab.label; (groups[g] = groups[g] || []).push(f); }); %>
+<% if (tabKey === 'integrations') { %>
+<div class="panel note">
+  <h2 class="panel-title">How these connect</h2>
+  <p>Paste each ID and save — the code is added to every page automatically. Form submissions fire a <code>generate_lead</code> event (GA4, Tag Manager), a <code>Lead</code> event (Meta Pixel) and your Google Ads conversion. Call and WhatsApp clicks fire <code>click_call</code> / <code>click_whatsapp</code>. Your sitemap is at <a href="/sitemap.xml" target="_blank">/sitemap.xml</a> — submit it in Search Console after verifying.</p>
+  <p class="muted small">If you load GA4 or the Pixel inside Tag Manager, leave those fields blank here so events aren't counted twice.</p>
+</div>
+<% } %>
+<form method="post" enctype="multipart/form-data" data-dirty>
+  <input type="hidden" name="_csrf" value="<%= csrf %>">
+  <% Object.entries(groups).forEach(([g, fields]) => { %>
+  <section class="panel">
+    <h2 class="panel-title"><%= g %></h2>
+    <div class="fields"><% fields.forEach(f => { %><%- include('field', { f, item }) %><% }) %></div>
+  </section>
+  <% }) %>
+  <div class="savebar"><button class="b b-gold">Save <%= tab.label.toLowerCase() %></button></div>
+</form>
+<% if (tabKey === 'email') { %>
+<form method="post" action="/admin/test-email" class="mt"><input type="hidden" name="_csrf" value="<%= csrf %>"><button class="b b-line"><svg class="ic"><use href="#i-mail"/></svg>Send a test email</button></form>
+<% } %>
+<%- include('mediapicker') %>
+<%- include('bottom') %>

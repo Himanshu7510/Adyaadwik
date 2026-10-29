@@ -1,0 +1,30 @@
+<%- include('head') %>
+<% if (s.announcement) { %>
+<div class="announce"><% if (s.announcementLink) { %><a href="<%= s.announcementLink %>"><%= s.announcement %></a><% } else { %><%= s.announcement %><% } %></div>
+<% } %>
+<header class="site-header<%= locals.overlay ? ' is-overlay' : '' %>" id="top">
+  <div class="wrap header-inner">
+    <a class="brand" href="/" aria-label="<%= s.siteName %> home">
+      <% if (s.logo) { %>
+        <img src="<%= s.logo %>" alt="<%= s.siteName %>" class="brand-logo">
+      <% } else { %>
+        <img src="/public/img/monogram.png" alt="" class="brand-mark" width="52" height="37">
+        <span class="brand-word"><%= s.siteName %></span>
+      <% } %>
+    </a>
+    <nav class="main-nav" id="mainNav" aria-label="Main">
+      <% menu.forEach(m => { const active = m.href !== '/' && path.startsWith(m.href.split('?')[0]) && (!m.href.includes('?') || req.originalUrl.includes(m.href.split('?')[1])); %>
+        <a href="<%= m.href %>"<%= active ? ' aria-current=page' : '' %>><%= m.label %></a>
+      <% }) %>
+      <div class="nav-mobile-extra">
+        <a class="btn btn-gold" href="tel:<%= h.digits(s.phone) ? '+' + h.digits(s.phone) : '' %>"><svg class="ic"><use href="#i-phone"/></svg> <%= s.phone %></a>
+      </div>
+    </nav>
+    <div class="header-actions">
+      <% if (s.phone) { %><a class="header-phone" href="tel:+<%= h.digits(s.phone) %>"><svg class="ic"><use href="#i-phone"/></svg><span><%= s.phone %></span></a><% } %>
+      <% const cta = h.lines(s.headerCta)[0]; if (cta) { %><a class="btn btn-ink btn-sm header-cta" href="<%= cta[1] %>"><%= cta[0] %></a><% } %>
+      <button class="nav-toggle" aria-controls="mainNav" aria-expanded="false" aria-label="Open menu"><svg class="ic"><use href="#i-menu"/></svg></button>
+    </div>
+  </div>
+</header>
+<main id="content">

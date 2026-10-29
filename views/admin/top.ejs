@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title><%= locals.pageTitle ? pageTitle + ' — ' : '' %><%= s.siteName %> admin</title>
+<link rel="icon" href="/public/img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">
+<link rel="stylesheet" href="/public/css/admin.css?v=3">
+</head>
+<body class="admin">
+<%- include('../partials/icons') %>
+<% const nav = (href, icon, label, extra) => { const active = href === '/admin' ? adminPath === '/' : ('/admin' + adminPath).startsWith(href); return `<a href="${href}" class="${active ? 'is-active' : ''}"><svg class="ic"><use href="#i-${icon}"/></svg><span>${label}</span>${extra || ''}</a>`; }; %>
+<aside class="side" id="side">
+  <a class="side-brand" href="/admin"><img src="/public/img/monogram.png" alt="" width="42" height="30"><span><%= s.siteName %></span></a>
+  <nav>
+    <%- nav('/admin', 'chart', 'Dashboard') %>
+    <%- nav('/admin/leads', 'inbox', 'Leads', newLeads ? `<b class="badge">${newLeads}</b>` : '') %>
+    <p class="side-group">Listings</p>
+    <%- nav('/admin/c/properties', 'home', 'Properties') %>
+    <%- nav('/admin/c/projects', 'crane', 'Projects') %>
+    <%- nav('/admin/c/services', 'tool', 'Services') %>
+    <p class="side-group">Content</p>
+    <%- nav('/admin/c/slides', 'image', 'Home banners') %>
+    <%- nav('/admin/c/posts', 'pen', 'Blog') %>
+    <%- nav('/admin/c/pages', 'file', 'Pages') %>
+    <%- nav('/admin/c/testimonials', 'quote', 'Testimonials') %>
+    <%- nav('/admin/c/faqs', 'help', 'FAQs') %>
+    <%- nav('/admin/c/team', 'users', 'Team') %>
+    <%- nav('/admin/c/partners', 'handshake', 'Partners') %>
+    <%- nav('/admin/media', 'image', 'Media library') %>
+    <% if (user.role === 'admin') { %>
+    <p class="side-group">Setup</p>
+    <%- nav('/admin/settings/general', 'settings', 'Site settings') %>
+    <%- nav('/admin/settings/integrations', 'plug', 'Integrations') %>
+    <%- nav('/admin/settings/seo', 'globe', 'SEO') %>
+    <%- nav('/admin/users', 'users', 'Users') %>
+    <%- nav('/admin/backup', 'db', 'Backup') %>
+    <% } %>
+  </nav>
+  <div class="side-foot">
+    <a href="/" target="_blank"><svg class="ic"><use href="#i-external"/></svg><span>View website</span></a>
+    <a href="/admin/account"><svg class="ic"><use href="#i-users"/></svg><span><%= user.name || user.email %></span></a>
+    <form method="post" action="/admin/logout"><input type="hidden" name="_csrf" value="<%= csrf %>"><button><svg class="ic"><use href="#i-logout"/></svg><span>Log out</span></button></form>
+  </div>
+</aside>
+<div class="main">
+  <header class="topbar">
+    <button class="side-toggle" onclick="document.getElementById('side').classList.toggle('is-open')" aria-label="Menu"><svg class="ic"><use href="#i-menu"/></svg></button>
+    <h1><%= locals.pageTitle || 'Dashboard' %></h1>
+    <div class="topbar-actions"><%- locals.actions || '' %></div>
+  </header>
+  <% if (flash && flash.success) { %><div class="alert alert-ok"><svg class="ic"><use href="#i-check"/></svg><%= flash.success %></div><% } %>
+  <% if (flash && flash.error) { %><div class="alert alert-err"><%= flash.error %></div><% } %>
+  <div class="content">

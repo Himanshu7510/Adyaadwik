@@ -1,0 +1,105 @@
+<%- include('../partials/header') %>
+<%
+  const imgs = [p.cover, ...h.gallery(p.gallery)].filter(Boolean).filter((v, i, a) => a.indexOf(v) === i);
+  const yt = h.youtubeId(p.video);
+  const map = h.mapSrc(p.mapEmbed);
+  const specs = [
+    ['bed', 'Bedrooms', p.bedrooms ? p.bedrooms + ' BHK' : ''],
+    ['bath', 'Bathrooms', p.bathrooms],
+    ['area', 'Area', p.area ? Number(p.area).toLocaleString('en-IN') + ' ' + p.areaUnit : ''],
+    ['layers', 'Floor', p.floor],
+    ['compass', 'Facing', p.facing],
+    ['car', 'Parking', p.parking],
+    ['home', 'Furnishing', p.furnishing],
+    ['calendar', 'Possession', p.possession !== 'Not applicable' ? p.possession : ''],
+    ['building', 'Type', p.type],
+  ].filter(x => x[2]);
+  const waText = `Hi, I'm interested in "${p.title}" (${meta.canonical})`;
+%>
+<section class="prop-top">
+  <div class="wrap">
+    <nav class="crumbs crumbs-dark" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/properties">Properties</a><% if (p.city) { %><span aria-hidden="true">/</span><a href="/properties?city=<%= encodeURIComponent(p.city) %>"><%= p.city %></a><% } %></nav>
+    <div class="prop-title-row">
+      <div>
+        <p class="prop-badges"><span class="tag tag-<%= (p.purpose || 'sale').toLowerCase() %>">For <%= (p.purpose || 'sale').toLowerCase() %></span><% if (p.status !== 'Available') { %><span class="tag tag-status"><%= p.status %></span><% } %><% if (p.reraNo) { %><span class="rera">RERA <%= p.reraNo %></span><% } %></p>
+        <h1><%= p.title %></h1>
+        <p class="pcard-loc"><svg class="ic"><use href="#i-pin"/></svg><%= [p.locality, p.city].filter(Boolean).join(', ') %></p>
+      </div>
+      <div class="prop-price">
+        <strong><%= price(p) %></strong>
+        <% if (p.price && p.area && p.purpose === 'Sale') { %><span>₹<%= Math.round(p.price / p.area).toLocaleString('en-IN') %> per <%= p.areaUnit %></span><% } %>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="wrap gallery" data-gallery>
+  <% if (imgs.length) { %>
+  <div class="gallery-grid count-<%= Math.min(imgs.length, 4) %>">
+    <% imgs.slice(0, 4).forEach((src, i) => { %>
+      <button class="g-item" data-open="<%= i %>" aria-label="Open photo <%= i + 1 %>"><img src="<%= src %>" alt="<%= p.title %> photo <%= i + 1 %>" <%= i ? 'loading=lazy' : '' %> onerror="this.onerror=null;this.src='/public/img/placeholder.svg'"><% if (i === 3 && imgs.length > 4) { %><span class="g-more">+<%= imgs.length - 4 %> photos</span><% } %></button>
+    <% }) %>
+  </div>
+  <dialog class="lightbox" data-lightbox>
+    <button class="lb-close" data-close aria-label="Close"><svg class="ic"><use href="#i-x"/></svg></button>
+    <button class="lb-prev" data-prev aria-label="Previous"><svg class="ic"><use href="#i-left"/></svg></button>
+    <img alt="" data-lb-img>
+    <button class="lb-next" data-next aria-label="Next"><svg class="ic"><use href="#i-right"/></svg></button>
+    <script type="application/json" data-images><%- JSON.stringify(imgs).replace(/</g, '\\u003c') %></script>
+  </dialog>
+  <% } else { %><div class="gallery-grid count-1"><div class="g-item"><img src="/public/img/placeholder.svg" alt=""></div></div><% } %>
+</section>
+
+<section class="section section-tight">
+  <div class="wrap detail-layout">
+    <div class="detail-main">
+      <% if (specs.length) { %>
+      <ul class="spec-grid">
+        <% specs.forEach(([ic, l, v]) => { %><li><svg class="ic"><use href="#i-<%= ic %>"/></svg><span><%= l %></span><strong><%= v %></strong></li><% }) %>
+      </ul>
+      <% } %>
+      <% if (p.summary) { %><p class="lede-dark"><%= p.summary %></p><% } %>
+      <% if (p.description) { %><div class="prose"><%- p.description %></div><% } %>
+      <% if (h.tags(p.amenities).length) { %>
+      <h2 class="h3">Amenities</h2>
+      <ul class="amenities"><% h.tags(p.amenities).forEach(a => { %><li><svg class="ic"><use href="#i-check"/></svg><%= a %></li><% }) %></ul>
+      <% } %>
+      <% if (yt) { %>
+      <h2 class="h3">Video walkthrough</h2>
+      <div class="video"><iframe src="https://www.youtube-nocookie.com/embed/<%= yt %>" title="Video of <%= p.title %>" loading="lazy" allowfullscreen></iframe></div>
+      <% } %>
+      <% if (map || p.address) { %>
+      <h2 class="h3">Location</h2>
+      <% if (p.address) { %><p><%= p.address %></p><% } %>
+      <% if (map) { %><div class="map"><iframe src="<%= map %>" title="Map" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div><% } %>
+      <% } %>
+    </div>
+    <aside class="detail-side">
+      <div class="side-card sticky">
+        <h2 class="h3">Schedule a site visit</h2>
+        <p class="muted">Share your number and an advisor will confirm a time.</p>
+        <%- include('../partials/leadform', { type: 'enquiry', propertyId: p.id, compact: true, button: 'Request a site visit', message: '' }) %>
+        <div class="side-actions">
+          <% if (s.whatsapp) { %><a class="btn btn-wa btn-block" data-track="whatsapp" href="https://wa.me/<%= h.digits(s.whatsapp) %>?text=<%= encodeURIComponent(waText) %>" target="_blank" rel="noopener"><svg class="ic"><use href="#i-whatsapp"/></svg>WhatsApp</a><% } %>
+          <% if (s.phone) { %><a class="btn btn-outline btn-block" data-track="call" href="tel:+<%= h.digits(s.phone) %>"><svg class="ic"><use href="#i-phone"/></svg>Call</a><% } %>
+        </div>
+        <% if (p.brochure) { %><a class="link brochure" href="<%= p.brochure %>" target="_blank" data-track="brochure"><svg class="ic"><use href="#i-download"/></svg>Download brochure</a><% } %>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<% if (similar.length) { %>
+<section class="section section-stone">
+  <div class="wrap">
+    <div class="section-head"><h2>Similar properties</h2><a class="link" href="/properties?type=<%= encodeURIComponent(p.type || '') %>">See more <svg class="ic"><use href="#i-arrow"/></svg></a></div>
+    <div class="grid-3"><% similar.forEach(x => { %><%- include('../partials/card', { p: x }) %><% }) %></div>
+  </div>
+</section>
+<% } %>
+<div class="mobile-bar">
+  <% if (s.phone) { %><a href="tel:+<%= h.digits(s.phone) %>" data-track="call"><svg class="ic"><use href="#i-phone"/></svg>Call</a><% } %>
+  <% if (s.whatsapp) { %><a href="https://wa.me/<%= h.digits(s.whatsapp) %>?text=<%= encodeURIComponent(waText) %>" data-track="whatsapp"><svg class="ic"><use href="#i-whatsapp"/></svg>WhatsApp</a><% } %>
+  <a href="#" data-scroll=".detail-side" class="is-primary">Enquire</a>
+</div>
+<%- include('../partials/footer') %>

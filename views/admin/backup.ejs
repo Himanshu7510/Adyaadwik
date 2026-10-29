@@ -1,0 +1,18 @@
+<%- include('top', { pageTitle: 'Backup & restore' }) %>
+<div class="dash-grid">
+  <section class="panel">
+    <h2 class="panel-title">Download a backup</h2>
+    <p class="muted">One file with every listing, page, lead, user and setting. Uploaded images live in the <code>uploads</code> folder on your server — back that up too. Automatic copies are kept too: hourly in <code>data/backups</code> on your own server, or the last 40 saved versions when hosted on Vercel.</p>
+    <a class="b b-gold" href="/admin/backup/download"><svg class="ic"><use href="#i-download"/></svg>Download backup</a>
+  </section>
+  <section class="panel">
+    <h2 class="panel-title">Restore</h2>
+    <p class="muted">Replaces all current content with the backup file. This cannot be undone — download a fresh backup first.</p>
+    <form method="post" action="/admin/backup/restore" enctype="multipart/form-data" onsubmit="return confirm('Replace all website content with this backup?')">
+      <input type="hidden" name="_csrf" value="<%= csrf %>">
+      <input type="file" name="file" accept="application/json,.json" required>
+      <button class="b b-danger mt">Restore backup</button>
+    </form>
+  </section>
+</div>
+<%- include('bottom') %>

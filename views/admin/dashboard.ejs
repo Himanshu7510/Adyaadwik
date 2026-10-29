@@ -1,0 +1,40 @@
+<%- include('top', { pageTitle: 'Dashboard', actions: '<a class="b b-gold" href="/admin/c/properties/new"><svg class="ic"><use href="#i-plus"/></svg>Add property</a>' }) %>
+<% const max = Math.max(1, ...perDay.map(d => d.n)); %>
+<div class="kpis">
+  <a class="kpi" href="/admin/leads?status=New"><span>New leads</span><strong><%= stats.leadsNew %></strong><em>waiting for a call</em></a>
+  <a class="kpi" href="/admin/leads"><span>Leads this week</span><strong><%= stats.leadsWeek %></strong><em>last 7 days</em></a>
+  <a class="kpi" href="/admin/c/properties"><span>Live listings</span><strong><%= stats.available %></strong><em><%= stats.sold %> sold</em></a>
+  <a class="kpi" href="/admin/c/projects"><span>Projects</span><strong><%= stats.projects %></strong><em><%= stats.posts %> blog posts</em></a>
+</div>
+<div class="dash-grid">
+  <section class="panel">
+    <h2 class="panel-title">Leads, last 14 days</h2>
+    <div class="bars" role="img" aria-label="Leads per day">
+      <% perDay.forEach(d => { %><div class="bar" title="<%= d.d %>: <%= d.n %>"><span style="height:<%= Math.max(2, d.n / max * 100) %>%"></span><em><%= d.d.slice(8) %></em><% if (d.n) { %><b><%= d.n %></b><% } %></div><% }) %>
+    </div>
+    <ul class="by-type"><% byType.forEach(([l, n]) => { %><li><span><%= l %></span><strong><%= n %></strong></li><% }) %></ul>
+  </section>
+  <section class="panel">
+    <h2 class="panel-title">Setup checklist</h2>
+    <ul class="checklist">
+      <% integrations.forEach(([l, ok, tab]) => { %><li class="<%= ok ? 'ok' : '' %>"><span class="dot"></span><span><%= l %></span><a href="/admin/settings/<%= tab %>"><%= ok ? 'Edit' : 'Set up' %></a></li><% }) %>
+    </ul>
+  </section>
+</div>
+<section class="panel">
+  <div class="panel-head"><h2 class="panel-title">Latest leads</h2><a href="/admin/leads" class="b b-sm b-line">All leads</a></div>
+  <% if (!leads.length) { %><p class="muted">No leads yet. Form submissions from the website will appear here.</p><% } else { %>
+  <div class="table-wrap"><table class="tbl">
+    <thead><tr><th>Received</th><th>Name</th><th>Phone</th><th>Type</th><th>About</th><th>Status</th></tr></thead>
+    <tbody><% leads.forEach(l => { %>
+      <tr><td><%= new Date(l.createdAt).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) %></td>
+      <td class="td-title"><a href="/admin/leads/<%= l.id %>"><%= l.name %></a></td>
+      <td><a href="tel:<%= l.phone %>"><%= l.phone %></a></td>
+      <td><%= LEAD_TYPES[l.type] || l.type %></td>
+      <td class="muted"><%= l.propertyTitle || (l.details && (l.details.propertyType || l.details.workType)) || h.excerpt(l.message, 40) %></td>
+      <td><span class="pill pill-<%= String(l.status).toLowerCase().replace(/\s+/g,'-') %>"><%= l.status %></span></td></tr>
+    <% }) %></tbody>
+  </table></div>
+  <% } %>
+</section>
+<%- include('bottom') %>

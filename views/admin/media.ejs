@@ -1,0 +1,38 @@
+<% if (pick) { %>
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="/public/css/admin.css?v=3"></head><body class="picker-body">
+<% if (!files.filter(f => /\.(jpe?g|png|webp|gif|avif|svg|ico)$/i.test(f.name)).length) { %><p class="muted">No images uploaded yet. Use the Upload button on the form, or the Media library page.</p><% } %>
+<div class="media-grid">
+  <% files.filter(f => /\.(jpe?g|png|webp|gif|avif|svg|ico|pdf)$/i.test(f.name)).forEach(f => { %>
+  <button class="media-item" onclick="parent.postMessage({ pick: <%= JSON.stringify(pick) %>, url: <%= JSON.stringify(f.url) %> }, location.origin)">
+    <% if (/\.pdf$/i.test(f.name)) { %><span class="media-file"><svg class="ic"><use href="#i-file"/></svg></span><% } else { %><img src="<%= f.url %>" alt="" loading="lazy"><% } %>
+    <span class="media-name"><%= f.name %></span>
+  </button>
+  <% }) %>
+</div>
+<%- include('../partials/icons') %>
+</body></html>
+<% } else { %>
+<%- include('top', { pageTitle: 'Media library' }) %>
+<form class="panel upload-box" method="post" enctype="multipart/form-data">
+  <input type="hidden" name="_csrf" value="<%= csrf %>">
+  <svg class="ic"><use href="#i-image"/></svg>
+  <div><strong>Upload images, PDFs or videos</strong><p class="muted small">JPG, PNG, WebP, GIF, PDF or MP4 — up to 25 MB each. Compress large photos (under 400 KB) so pages load fast.</p></div>
+  <input type="file" name="files" multiple accept="image/*,application/pdf,video/mp4" required>
+  <button class="b b-gold">Upload</button>
+</form>
+<p class="muted"><%= files.length %> file<%= files.length === 1 ? '' : 's' %></p>
+<div class="media-grid">
+  <% files.forEach(f => { %>
+  <div class="media-item">
+    <% if (/\.(jpe?g|png|webp|gif|avif|ico)$/i.test(f.name)) { %><a href="<%= f.url %>" target="_blank"><img src="<%= f.url %>" alt="" loading="lazy"></a><% } else { %><a href="<%= f.url %>" target="_blank" class="media-file"><svg class="ic"><use href="#i-file"/></svg></a><% } %>
+    <span class="media-name" title="<%= f.name %>"><%= f.name %></span>
+    <span class="media-meta"><%= (f.size / 1024).toFixed(0) %> KB</span>
+    <div class="media-actions">
+      <button type="button" class="b b-sm b-line" data-copy="<%= f.url %>"><svg class="ic"><use href="#i-copy"/></svg>Copy URL</button>
+      <form method="post" action="/admin/media/delete" onsubmit="return confirm('Delete this file? Pages using it will show a broken image.')"><input type="hidden" name="_csrf" value="<%= csrf %>"><input type="hidden" name="url" value="<%= f.url %>"><button class="icon-btn" title="Delete"><svg class="ic"><use href="#i-trash"/></svg></button></form>
+    </div>
+  </div>
+  <% }) %>
+</div>
+<%- include('bottom') %>
+<% } %>

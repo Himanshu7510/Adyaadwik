@@ -1,0 +1,17 @@
+<section class="cta-band" id="enquire">
+  <div class="wrap cta-split">
+    <div class="cta-copy">
+      <img src="/public/img/monogram.png" alt="" class="cta-mark" width="90" height="63">
+      <h2><%= s.ctaHeading %></h2>
+      <p><%= s.ctaText %></p>
+      <ul class="cta-contacts">
+        <% if (s.phone) { %><li><a href="tel:+<%= h.digits(s.phone) %>" data-track="call"><svg class="ic"><use href="#i-phone"/></svg><%= s.phone %></a></li><% } %>
+        <% if (s.whatsapp) { %><li><a href="https://wa.me/<%= h.digits(s.whatsapp) %>" target="_blank" rel="noopener" data-track="whatsapp"><svg class="ic"><use href="#i-whatsapp"/></svg>WhatsApp us</a></li><% } %>
+        <% if (s.email) { %><li><a href="mailto:<%= s.email %>"><svg class="ic"><use href="#i-mail"/></svg><%= s.email %></a></li><% } %>
+      </ul>
+    </div>
+    <div class="cta-form card-form">
+      <%- include('leadform', { type: locals.ctaType || 'enquiry', button: 'Request a call back' }) %>
+    </div>
+  </div>
+</section>

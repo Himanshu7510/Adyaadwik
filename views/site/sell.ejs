@@ -1,0 +1,24 @@
+<%- include('../partials/header') %>
+<%- include('../partials/pagehead', { title: s.sellHeading, image: s.sellImage, crumbs: [['Sell your property']], lede: s.sellIntro }) %>
+<% const steps = h.lines(s.sellSteps); %>
+<section class="section section-tight">
+  <div class="wrap">
+    <ol class="steps steps-4"><% steps.forEach(([t, d], i) => { %><li><span class="step-n"><%= i + 1 %></span><strong><%= t %></strong><p><%= d %></p></li><% }) %></ol>
+  </div>
+</section>
+<section class="section section-stone" id="sell-form">
+  <div class="wrap form-split">
+    <div>
+      <h2>Tell us about your property</h2>
+      <p class="muted">The more you share, the faster we can come back with a number. Photos help, but are optional.</p>
+      <ul class="why why-dark">
+        <li><svg class="ic"><use href="#i-check"/></svg><div><strong>No obligation</strong><span>A valuation and offer cost you nothing.</span></div></li>
+        <li><svg class="ic"><use href="#i-check"/></svg><div><strong>Payment by bank transfer</strong><span>Token, agreement and balance as per a written schedule.</span></div></li>
+        <li><svg class="ic"><use href="#i-check"/></svg><div><strong>Paperwork handled</strong><span>Our legal desk prepares the agreement and books the registry.</span></div></li>
+      </ul>
+      <% if (faqs.length) { %><div class="faq-list"><% faqs.forEach(f => { %><details><summary><%= f.question %></summary><p><%= f.answer %></p></details><% }) %></div><% } %>
+    </div>
+    <div class="card-form"><%- include('../partials/leadform', { type: 'sell' }) %></div>
+  </div>
+</section>
+<%- include('../partials/footer') %>

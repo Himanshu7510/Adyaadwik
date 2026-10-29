@@ -1,0 +1,33 @@
+<%- include('../partials/header') %>
+<% const imgs = [p.cover, ...h.gallery(p.gallery)].filter(Boolean).filter((v, i, a) => a.indexOf(v) === i); %>
+<%- include('../partials/pagehead', { title: p.title, image: p.cover, crumbs: [['Projects', '/projects'], [p.title]], lede: p.summary }) %>
+<section class="section section-tight">
+  <div class="wrap detail-layout">
+    <div class="detail-main">
+      <ul class="spec-grid">
+        <% [['layers','Stage',p.stage],['building','Category',p.category],['pin','Location',p.location],['area','Built-up area',p.builtUpArea],['home','Units',p.units],['calendar','Year',p.year],['users','Client',p.client],['file','RERA',p.reraNo]].filter(x=>x[2]).forEach(([ic,l,v]) => { %><li><svg class="ic"><use href="#i-<%= ic %>"/></svg><span><%= l %></span><strong><%= v %></strong></li><% }) %>
+      </ul>
+      <% if (p.stage !== 'Upcoming' && p.progress !== '' && p.progress != null) { %>
+      <div class="progress progress-lg"><div class="progress-bar"><span style="width:<%= Math.min(100, Number(p.progress) || 0) %>%"></span></div><span class="progress-num"><%= p.progress %>% construction complete</span></div>
+      <% } %>
+      <% if (p.description) { %><div class="prose"><%- p.description %></div><% } %>
+      <% if (h.tags(p.highlights).length) { %><h2 class="h3">Highlights</h2><ul class="amenities"><% h.tags(p.highlights).forEach(a => { %><li><svg class="ic"><use href="#i-check"/></svg><%= a %></li><% }) %></ul><% } %>
+      <% if (imgs.length > 1) { %>
+      <h2 class="h3">Site gallery</h2>
+      <div class="thumb-grid" data-gallery>
+        <% imgs.forEach((src, i) => { %><button class="g-item" data-open="<%= i %>"><img src="<%= src %>" alt="<%= p.title %> photo <%= i + 1 %>" loading="lazy" onerror="this.onerror=null;this.src='/public/img/placeholder.svg'"></button><% }) %>
+        <dialog class="lightbox" data-lightbox><button class="lb-close" data-close aria-label="Close"><svg class="ic"><use href="#i-x"/></svg></button><button class="lb-prev" data-prev aria-label="Previous"><svg class="ic"><use href="#i-left"/></svg></button><img alt="" data-lb-img><button class="lb-next" data-next aria-label="Next"><svg class="ic"><use href="#i-right"/></svg></button><script type="application/json" data-images><%- JSON.stringify(imgs).replace(/</g, '\\u003c') %></script></dialog>
+      </div>
+      <% } %>
+      <% if (units.length) { %><h2 class="h3">Available units</h2><div class="grid-2"><% units.forEach(x => { %><%- include('../partials/card', { p: x }) %><% }) %></div><% } %>
+    </div>
+    <aside class="detail-side">
+      <div class="side-card sticky">
+        <h2 class="h3">Ask about <%= p.title %></h2>
+        <%- include('../partials/leadform', { type: 'enquiry', compact: true, message: 'Interested in ' + p.title, button: 'Get details' }) %>
+        <% if (p.brochure) { %><a class="link brochure" href="<%= p.brochure %>" target="_blank" data-track="brochure"><svg class="ic"><use href="#i-download"/></svg>Download brochure</a><% } %>
+      </div>
+    </aside>
+  </div>
+</section>
+<%- include('../partials/footer') %>

@@ -1,0 +1,33 @@
+<%- include('top', { pageTitle: lead.name }) %>
+<p class="back"><a href="/admin/leads"><svg class="ic"><use href="#i-left"/></svg>All leads</a></p>
+<div class="dash-grid">
+  <section class="panel">
+    <h2 class="panel-title"><%= LEAD_TYPES[lead.type] || lead.type %></h2>
+    <dl class="dl">
+      <dt>Received</dt><dd><%= new Date(lead.createdAt).toLocaleString('en-IN') %></dd>
+      <dt>Phone</dt><dd><a href="tel:<%= lead.phone %>"><%= lead.phone %></a> · <a href="https://wa.me/<%= h.digits(lead.phone).length === 10 ? '91' + h.digits(lead.phone) : h.digits(lead.phone) %>" target="_blank">WhatsApp</a></dd>
+      <% if (lead.email) { %><dt>Email</dt><dd><a href="mailto:<%= lead.email %>"><%= lead.email %></a></dd><% } %>
+      <% if (lead.propertyTitle) { %><dt>Property</dt><dd><a href="/admin/c/properties/<%= lead.propertyId %>"><%= lead.propertyTitle %></a></dd><% } %>
+      <% Object.entries(lead.details || {}).forEach(([k, v]) => { %><dt><%= k.replace(/([A-Z])/g, ' $1').replace(/^./, c => c.toUpperCase()) %></dt><dd><%= v %></dd><% }) %>
+      <% if (lead.message) { %><dt>Message</dt><dd class="pre"><%= lead.message %></dd><% } %>
+      <dt>Page</dt><dd class="muted small"><%= lead.source %></dd>
+      <% if (lead.utm) { %><dt>Campaign</dt><dd class="muted small"><%= Object.entries(lead.utm).map(([k, v]) => k + ': ' + v).join(' · ') %></dd><% } %>
+    </dl>
+    <% if ((lead.photos || []).length) { %><h3 class="sub">Photos</h3><div class="gal-grid"><% lead.photos.forEach(u => { %><figure><a href="<%= u %>" target="_blank"><img src="<%= u %>" alt=""></a></figure><% }) %></div><% } %>
+  </section>
+  <section class="panel">
+    <h2 class="panel-title">Follow-up</h2>
+    <form method="post" class="fields fields-1">
+      <input type="hidden" name="_csrf" value="<%= csrf %>">
+      <div class="fld"><label>Status</label><select name="status"><% LEAD_STATUSES.forEach(st => { %><option <%= lead.status === st ? 'selected' : '' %>><%= st %></option><% }) %></select></div>
+      <div class="fld"><label>Next follow-up</label><input type="date" name="followUp" value="<%= lead.followUp || '' %>"></div>
+      <div class="fld"><label>Notes</label><textarea name="notes" rows="6"><%= lead.notes %></textarea></div>
+      <button class="b b-gold">Save</button>
+    </form>
+    <% if (lead.type === 'sell') { %>
+    <form method="post" action="/admin/leads/<%= lead.id %>/to-listing" class="mt"><input type="hidden" name="_csrf" value="<%= csrf %>"><button class="b b-line b-block"><svg class="ic"><use href="#i-home"/></svg>Create draft listing from this submission</button></form>
+    <% } %>
+    <form method="post" action="/admin/leads/<%= lead.id %>/delete" class="mt" onsubmit="return confirm('Delete this lead?')"><input type="hidden" name="_csrf" value="<%= csrf %>"><button class="b b-sm b-danger">Delete lead</button></form>
+  </section>
+</div>
+<%- include('bottom') %>

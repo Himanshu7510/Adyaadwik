@@ -1,0 +1,63 @@
+<%- include('../partials/header') %>
+<%- include('../partials/pagehead', { title: s.constructionHeading, image: s.constructionImage, crumbs: [['Construction']], lede: s.constructionIntro }) %>
+
+<section class="section" id="estimate">
+  <div class="wrap calc-layout">
+    <div>
+      <h2>Estimate your construction cost</h2>
+      <p class="muted">A quick ballpark. Your final quote comes with an itemised bill of quantities after a site visit.</p>
+      <form class="calc" data-calc>
+        <div class="fgrid">
+          <label class="field"><span>Plot area</span><input type="number" min="20" step="1" name="plot" value="200" data-plot></label>
+          <label class="field"><span>Unit</span><select name="unit" data-unit><option value="9">sq yd / gaj</option><option value="1">sq ft</option><option value="10.7639">sq m</option></select></label>
+          <label class="field"><span>Floors (including ground)</span><select data-floors><option value="1">1</option><option value="2" selected>2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label>
+          <label class="field"><span>Ground coverage</span><select data-cover><option value="0.6">60%</option><option value="0.75" selected>75%</option><option value="0.9">90%</option></select></label>
+        </div>
+        <fieldset class="packages">
+          <legend>Specification</legend>
+          <% rates.forEach(([name, rate, inc], i) => { %>
+          <label class="pkg"><input type="radio" name="pkg" value="<%= rate %>" <%= i === 0 ? 'checked' : '' %>><span class="pkg-body"><strong><%= name %></strong><span class="pkg-rate">₹<%= Number(rate).toLocaleString('en-IN') %> / sq ft</span><span class="pkg-inc"><%= inc %></span></span></label>
+          <% }) %>
+        </fieldset>
+      </form>
+    </div>
+    <div class="calc-result" aria-live="polite">
+      <p class="calc-label">Estimated built-up area</p>
+      <p class="calc-area" data-out-area>—</p>
+      <p class="calc-label">Estimated cost</p>
+      <p class="calc-total" data-out-total>—</p>
+      <p class="calc-note">Excludes approvals, architect fees, boundary wall and utility connections. These are quoted separately.</p>
+      <a class="btn btn-gold btn-block" href="#quote">Get an exact quote</a>
+    </div>
+  </div>
+</section>
+
+<% const steps = h.lines(s.process); if (steps.length) { %>
+<section class="section section-stone">
+  <div class="wrap">
+    <h2>From plot to possession</h2>
+    <ol class="steps"><% steps.forEach(([t, d], i) => { %><li><span class="step-n"><%= i + 1 %></span><strong><%= t %></strong><p><%= d %></p></li><% }) %></ol>
+  </div>
+</section>
+<% } %>
+
+<% if (projects.length) { %>
+<section class="section">
+  <div class="wrap">
+    <div class="section-head"><h2>Recent construction work</h2><a class="link" href="/projects">All projects <svg class="ic"><use href="#i-arrow"/></svg></a></div>
+    <div class="grid-3"><% projects.forEach(p => { %><%- include('../partials/projectcard', { p }) %><% }) %></div>
+  </div>
+</section>
+<% } %>
+
+<section class="section section-ink" id="quote">
+  <div class="wrap form-split">
+    <div>
+      <h2>Request a fixed construction quote</h2>
+      <p class="on-dark">Share your plot details. An engineer will call you, visit the site and send an itemised quote — free of charge.</p>
+      <% if (faqs.length) { %><div class="faq-list faq-dark"><% faqs.forEach(f => { %><details><summary><%= f.question %></summary><p><%= f.answer %></p></details><% }) %></div><% } %>
+    </div>
+    <div class="card-form"><%- include('../partials/leadform', { type: 'construction' }) %></div>
+  </div>
+</section>
+<%- include('../partials/footer') %>

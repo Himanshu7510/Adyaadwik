@@ -1,0 +1,12 @@
+<%- include('../partials/header') %>
+<%- include('../partials/pagehead', { title: 'Frequently asked questions', crumbs: [['FAQs']] }) %>
+<section class="section section-tight">
+  <div class="wrap narrow-wrap">
+    <% const cats = [...new Set(faqs.map(f => f.category || 'General'))]; cats.forEach(c => { %>
+      <h2 class="h3 faq-cat"><%= c %></h2>
+      <div class="faq-list"><% faqs.filter(f => (f.category || 'General') === c).forEach(f => { %><details><summary><%= f.question %></summary><p><%= f.answer %></p></details><% }) %></div>
+    <% }) %>
+  </div>
+</section>
+<%- include('../partials/cta') %>
+<%- include('../partials/footer') %>

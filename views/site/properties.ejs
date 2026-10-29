@@ -1,0 +1,60 @@
+<%- include('../partials/header') %>
+<%- include('../partials/pagehead', { title: heading, crumbs: [['Properties']], lede: total + (total === 1 ? ' listing matches' : ' listings match') + ' your search' }) %>
+<section class="section section-tight">
+  <div class="wrap listing-layout">
+    <aside class="filters" id="filters">
+      <form method="get" action="/properties" class="filter-form">
+        <div class="filter-head"><h2>Filter</h2><a href="/properties" class="link-sm">Clear all</a></div>
+        <label class="field"><span>Keyword</span><input name="q" value="<%= q.q || '' %>" placeholder="Locality, project…"></label>
+        <fieldset class="field seg">
+          <legend>Looking to</legend>
+          <% [['', 'All'], ['Sale', 'Buy'], ['Rent', 'Rent'], ['Lease', 'Lease']].forEach(([v, l]) => { %>
+            <label><input type="radio" name="purpose" value="<%= v %>" <%= (q.purpose || '') === v ? 'checked' : '' %>><span><%= l %></span></label>
+          <% }) %>
+        </fieldset>
+        <label class="field"><span>City</span><select name="city"><option value="">All cities</option><% cities.forEach(c => { %><option <%= q.city === c ? 'selected' : '' %>><%= c %></option><% }) %></select></label>
+        <label class="field"><span>Property type</span><select name="type"><option value="">Any type</option><% propertyTypes.forEach(c => { %><option <%= q.type === c ? 'selected' : '' %>><%= c %></option><% }) %></select></label>
+        <label class="field"><span>Budget</span><select name="budget"><option value="">Any budget</option><% budgets.forEach((b, i) => { %><option value="<%= i %>" <%= String(q.budget) === String(i) ? 'selected' : '' %>><%= b[2] %></option><% }) %></select></label>
+        <fieldset class="field seg">
+          <legend>Bedrooms</legend>
+          <% [['', 'Any'], ['1', '1'], ['2', '2'], ['3', '3'], ['4', '4+']].forEach(([v, l]) => { %>
+            <label><input type="radio" name="bhk" value="<%= v %>" <%= (q.bhk || '') === v ? 'checked' : '' %>><span><%= l %></span></label>
+          <% }) %>
+        </fieldset>
+        <label class="field"><span>Possession</span><select name="possession"><option value="">Any</option><% ['Ready to move', 'Under construction', 'New launch'].forEach(c => { %><option <%= q.possession === c ? 'selected' : '' %>><%= c %></option><% }) %></select></label>
+        <label class="check"><input type="checkbox" name="status" value="all" <%= q.status === 'all' ? 'checked' : '' %>> Include sold &amp; rented</label>
+        <button class="btn btn-ink btn-block" type="submit">Show results</button>
+      </form>
+    </aside>
+    <div class="results">
+      <div class="results-bar">
+        <button class="btn btn-outline btn-sm filter-toggle" type="button" data-toggle="#filters"><svg class="ic"><use href="#i-search"/></svg> Filters</button>
+        <form method="get" action="/properties" class="sort-form">
+          <% Object.entries(q).filter(([k]) => !['sort', 'page'].includes(k)).forEach(([k, v]) => { %><input type="hidden" name="<%= k %>" value="<%= v %>"><% }) %>
+          <label>Sort by <select name="sort" onchange="this.form.submit()">
+            <% [['', 'Recommended'], ['newest', 'Newest first'], ['price-asc', 'Price: low to high'], ['price-desc', 'Price: high to low'], ['area-desc', 'Largest area']].forEach(([v, l]) => { %><option value="<%= v %>" <%= (q.sort || '') === v ? 'selected' : '' %>><%= l %></option><% }) %>
+          </select></label>
+        </form>
+      </div>
+      <% if (!list.length) { %>
+        <div class="empty">
+          <h2>No listings match these filters yet</h2>
+          <p>Widen the budget or city — or tell us what you need and we will call you when a matching property comes in.</p>
+          <div class="card-form narrow"><%- include('../partials/leadform', { type: 'requirement' }) %></div>
+        </div>
+      <% } else { %>
+        <div class="grid-3 grid-results">
+          <% list.forEach(p => { %><%- include('../partials/card', { p }) %><% }) %>
+        </div>
+        <% if (pages > 1) { %>
+        <nav class="pager" aria-label="Pages">
+          <% if (page > 1) { %><a href="<%= qs({ page: page - 1 }) %>" aria-label="Previous page"><svg class="ic"><use href="#i-left"/></svg></a><% } %>
+          <% for (let i = 1; i <= pages; i++) { %><a href="<%= qs({ page: i }) %>" <%= i === page ? 'aria-current=page' : '' %>><%= i %></a><% } %>
+          <% if (page < pages) { %><a href="<%= qs({ page: page + 1 }) %>" aria-label="Next page"><svg class="ic"><use href="#i-right"/></svg></a><% } %>
+        </nav>
+        <% } %>
+      <% } %>
+    </div>
+  </div>
+</section>
+<%- include('../partials/footer') %>

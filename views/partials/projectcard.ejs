@@ -1,0 +1,17 @@
+<article class="prcard">
+  <a class="prcard-media" href="/projects/<%= p.slug %>">
+    <img src="<%= p.cover || '/public/img/placeholder.svg' %>" alt="<%= p.title %>" loading="lazy" onerror="this.onerror=null;this.src='/public/img/placeholder.svg'">
+    <span class="tag tag-stage tag-<%= (p.stage || '').toLowerCase() %>"><%= p.stage %></span>
+  </a>
+  <div class="prcard-body">
+    <p class="prcard-cat"><%= p.category %></p>
+    <h3><a href="/projects/<%= p.slug %>"><%= p.title %></a></h3>
+    <p class="pcard-loc"><svg class="ic"><use href="#i-pin"/></svg><%= p.location %></p>
+    <% if (p.stage !== 'Upcoming' && p.progress !== '' && p.progress != null) { %>
+    <div class="progress" role="progressbar" aria-valuenow="<%= p.progress %>" aria-valuemin="0" aria-valuemax="100" aria-label="Construction progress">
+      <div class="progress-bar"><span style="width:<%= Math.min(100, Number(p.progress) || 0) %>%"></span></div>
+      <span class="progress-num"><%= p.progress %>% built</span>
+    </div>
+    <% } else if (p.units) { %><p class="prcard-units"><%= p.units %></p><% } %>
+  </div>
+</article>

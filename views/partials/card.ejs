@@ -1,0 +1,18 @@
+<article class="pcard">
+  <a class="pcard-media" href="/properties/<%= p.slug %>">
+    <img src="<%= p.cover || '/public/img/placeholder.svg' %>" alt="<%= p.title %>" loading="lazy" onerror="this.onerror=null;this.src='/public/img/placeholder.svg'">
+    <span class="tag tag-<%= (p.purpose || 'sale').toLowerCase() %>">For <%= (p.purpose || 'Sale').toLowerCase() %></span>
+    <% if (p.status && p.status !== 'Available') { %><span class="tag tag-status"><%= p.status %></span><% } %>
+  </a>
+  <div class="pcard-body">
+    <p class="pcard-price"><%= price(p) %></p>
+    <h3 class="pcard-title"><a href="/properties/<%= p.slug %>"><%= p.title %></a></h3>
+    <p class="pcard-loc"><svg class="ic"><use href="#i-pin"/></svg><%= [p.locality, p.city].filter(Boolean).join(', ') %></p>
+    <ul class="pcard-specs">
+      <% if (p.bedrooms) { %><li><svg class="ic"><use href="#i-bed"/></svg><%= p.bedrooms %> BHK</li><% } %>
+      <% if (p.area) { %><li><svg class="ic"><use href="#i-area"/></svg><%= Number(p.area).toLocaleString('en-IN') %> <%= p.areaUnit %></li><% } %>
+      <% if (p.type && !p.bedrooms) { %><li><svg class="ic"><use href="#i-layers"/></svg><%= p.type %></li><% } %>
+      <% if (p.possession && p.possession !== 'Not applicable' && p.bedrooms) { %><li><svg class="ic"><use href="#i-calendar"/></svg><%= p.possession %></li><% } %>
+    </ul>
+  </div>
+</article>

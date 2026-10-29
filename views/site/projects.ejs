@@ -1,0 +1,14 @@
+<%- include('../partials/header') %>
+<%- include('../partials/pagehead', { title: stage ? stage + ' projects' : 'Our projects', crumbs: [['Projects']], lede: 'Homes and buildings we are constructing now, launching next, and have already handed over.' }) %>
+<section class="section section-tight">
+  <div class="wrap">
+    <nav class="chips" aria-label="Filter projects">
+      <a href="/projects" <%= !stage ? 'aria-current=page' : '' %>>All</a>
+      <% ['Ongoing', 'Upcoming', 'Completed'].forEach(st => { %><a href="/projects?stage=<%= st %>" <%= stage === st ? 'aria-current=page' : '' %>><%= st %></a><% }) %>
+    </nav>
+    <% if (!list.length) { %><div class="empty"><h2>No <%= (stage || '').toLowerCase() %> projects to show right now</h2><p><a href="/projects">See all projects</a></p></div><% } %>
+    <div class="grid-3"><% list.forEach(p => { %><%- include('../partials/projectcard', { p }) %><% }) %></div>
+  </div>
+</section>
+<%- include('../partials/cta', { ctaType: 'construction' }) %>
+<%- include('../partials/footer') %>

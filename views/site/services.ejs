@@ -1,0 +1,20 @@
+<%- include('../partials/header') %>
+<%- include('../partials/pagehead', { title: 'What we do', crumbs: [['Services']], lede: 'Construction, sales, acquisitions and the paperwork in between — handled by one accountable team.' }) %>
+<section class="section section-tight">
+  <div class="wrap svc-rows">
+    <% services.forEach((sv, i) => { %>
+    <article class="svc-row<%= i % 2 ? ' flip' : '' %>">
+      <a class="svc-img" href="/services/<%= sv.slug %>"><img src="<%= sv.cover || '/public/img/placeholder.svg' %>" alt="" loading="lazy" onerror="this.onerror=null;this.src='/public/img/placeholder.svg'"></a>
+      <div class="svc-txt">
+        <span class="service-ic"><svg class="ic"><use href="#i-<%= sv.icon || 'home' %>"/></svg></span>
+        <h2><a href="/services/<%= sv.slug %>"><%= sv.title %></a></h2>
+        <p><%= sv.summary %></p>
+        <% if (h.tags(sv.points).length) { %><ul class="ticks"><% h.tags(sv.points).slice(0, 5).forEach(pt => { %><li><svg class="ic"><use href="#i-check"/></svg><%= pt %></li><% }) %></ul><% } %>
+        <a class="btn btn-outline" href="/services/<%= sv.slug %>">Learn more</a>
+      </div>
+    </article>
+    <% }) %>
+  </div>
+</section>
+<%- include('../partials/cta') %>
+<%- include('../partials/footer') %>

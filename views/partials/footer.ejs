@@ -1,0 +1,54 @@
+</main>
+<footer class="site-footer">
+  <div class="wrap footer-grid">
+    <div class="footer-brand">
+      <a href="/" class="brand brand-light">
+        <img src="<%= s.logoLight || '/public/img/monogram.png' %>" alt="" class="brand-mark" width="60" height="42">
+        <% if (!s.logoLight) { %><span class="brand-word"><%= s.siteName %></span><% } %>
+      </a>
+      <p><%= s.footerAbout %></p>
+      <div class="social">
+        <% [['facebook','Facebook'],['instagram','Instagram'],['youtube','YouTube'],['linkedin','LinkedIn'],['twitter','X']].forEach(([k,l]) => { if (s[k]) { %>
+          <a href="<%= s[k] %>" target="_blank" rel="noopener" aria-label="<%= l %>"><svg class="ic"><use href="#i-<%= k %>"/></svg></a>
+        <% } }) %>
+      </div>
+    </div>
+    <div>
+      <h3>Services</h3>
+      <ul>
+        <% services.slice(0, 6).forEach(sv => { %><li><a href="/services/<%= sv.slug %>"><%= sv.title %></a></li><% }) %>
+      </ul>
+    </div>
+    <div>
+      <h3>Explore</h3>
+      <ul>
+        <% h.lines(s.footerLinks).forEach(([l, href]) => { %><li><a href="<%= href %>"><%= l %></a></li><% }) %>
+      </ul>
+    </div>
+    <div>
+      <h3>Visit or call</h3>
+      <ul class="contact-list">
+        <% if (s.address) { %><li><svg class="ic"><use href="#i-pin"/></svg><span><%= s.address %></span></li><% } %>
+        <% if (s.phone) { %><li><svg class="ic"><use href="#i-phone"/></svg><a href="tel:+<%= h.digits(s.phone) %>"><%= s.phone %></a></li><% } %>
+        <% if (s.email) { %><li><svg class="ic"><use href="#i-mail"/></svg><a href="mailto:<%= s.email %>"><%= s.email %></a></li><% } %>
+        <% if (s.hours) { %><li><svg class="ic"><use href="#i-calendar"/></svg><span><%= s.hours %></span></li><% } %>
+      </ul>
+    </div>
+  </div>
+  <div class="wrap footer-legal">
+    <p><%= (s.copyright || '').replace('{year}', year) %><% if (s.reraAgentNo) { %> · RERA: <%= s.reraAgentNo %><% } %></p>
+    <p class="footer-pages"><% footerPages.forEach(p => { %><a href="/p/<%= p.slug %>"><%= p.title %></a><% }) %><a href="/sitemap.xml">Sitemap</a></p>
+    <% if (s.disclaimer) { %><p class="disclaimer"><%= s.disclaimer %></p><% } %>
+  </div>
+</footer>
+
+<div class="float-actions">
+  <% if (s.whatsapp) { %><a class="float-wa" data-track="whatsapp" href="https://wa.me/<%= h.digits(s.whatsapp) %>?text=<%= encodeURIComponent('Hi ' + s.siteName + ', I would like to know more.') %>" target="_blank" rel="noopener" aria-label="Chat on WhatsApp"><svg class="ic"><use href="#i-whatsapp"/></svg></a><% } %>
+  <% if (s.phone) { %><a class="float-call" data-track="call" href="tel:+<%= h.digits(s.phone) %>" aria-label="Call us"><svg class="ic"><use href="#i-phone"/></svg></a><% } %>
+</div>
+
+<script src="/public/js/site.js?v=3" defer></script>
+<% if (s.linkedinPartnerId) { %><noscript><img height="1" width="1" style="display:none" alt="" src="https://px.ads.linkedin.com/collect/?pid=<%= s.linkedinPartnerId %>&fmt=gif"></noscript><% } %>
+<%- s.customBodyEnd || '' %>
+</body>
+</html>
