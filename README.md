@@ -107,7 +107,13 @@ Then `sudo certbot --nginx -d avyaadwik.com -d www.avyaadwik.com` for free HTTPS
 
 Create a web service from the folder, build `npm install`, start `npm start`, and **attach a persistent disk** mounted at e.g. `/var/data`, then set `DATA_DIR=/var/data/data` and `UPLOAD_DIR=/var/data/uploads` so content and uploads survive redeploys.
 
-> Serverless hosts without a persistent disk (Vercel, Netlify) are not suitable, because listings and uploads are saved to disk.
+### Option D — Vercel + GitHub (how this site is hosted now)
+
+The app detects Vercel automatically: when the `BLOB_READ_WRITE_TOKEN` variable exists (added when a Vercel Blob store is connected to the project), content is saved as encrypted versions in Blob storage and uploads go to Blob as well. Admin logins use signed cookies.
+
+Project environment variables: `SESSION_SECRET`, `DATA_KEY` (encrypts the content — never change it once set), `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `COOKIE_SECURE=true`, plus `BLOB_READ_WRITE_TOKEN` from the Blob store.
+
+Every push to the `main` branch on GitHub redeploys the site. Notes for the free Hobby plan: each upload request is limited to about 4.5 MB, and an admin change can take up to a minute to appear on public pages.
 
 ---
 

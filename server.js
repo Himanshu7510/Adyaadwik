@@ -30,6 +30,7 @@ app.use(express.urlencoded({ extended: true, limit: '5mb' }));
 app.use(express.json({ limit: '5mb' }));
 app.use('/public', express.static(path.join(__dirname, 'public'), { maxAge: '7d' }));
 app.use('/uploads', express.static(UPLOAD_DIR, { maxAge: '30d' }));
+app.get('/favicon.ico', (req, res) => res.redirect(301, '/public/img/favicon.png'));
 
 // Signed-cookie sessions: work the same on a single server and on Vercel's serverless functions.
 app.use(cookieSession({
@@ -42,12 +43,13 @@ app.use(cookieSession({
 }));
 
 // Load the database (and create demo content on the very first run).
-// On Vercel, re-check for newer content every 30 s on the website and on every admin request.
+// On Vercel, re-check for newer content every 60 s on the website, 10 s in the admin and before every save.
 let seeded = false;
 app.use(async (req, res, next) => {
   try {
-    const isAdmin = req.path.startsWith('/admin') || req.method === 'POST';
-    await db.refresh(isAdmin ? 0 : 30000);
+    if (req.path.startsWith('/public/') || req.path === '/favicon.ico') return next();
+    const maxAge = req.method === 'POST' ? 0 : req.path.startsWith('/admin') ? 10000 : 60000;
+    await db.refresh(maxAge);
     if (!seeded) { await seed(); seeded = true; }
     next();
   } catch (e) { next(e); }
