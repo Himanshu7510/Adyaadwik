@@ -10,4 +10,4 @@
     <aside class="detail-side"><div class="side-card sticky"><h2 class="h3">Talk to our team</h2><%- include('../partials/leadform', { type: p.ctaType || 'enquiry', compact: true, message: 'Enquiry about ' + p.title }) %></div></aside>
   </div>
 </section>
-<%- include('../partials/footer') %>
+<%- include('../partials/footer', { enquire: '.detail-side' }) %>

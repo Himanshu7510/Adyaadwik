@@ -2,13 +2,41 @@
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
 
-  // mobile nav
+  // mobile menu
   var toggle = $('.nav-toggle'), nav = $('#mainNav');
-  if (toggle && nav) toggle.addEventListener('click', function () {
-    var open = nav.classList.toggle('is-open');
+  function setNav(open) {
+    if (!toggle || !nav) return;
+    nav.classList.toggle('is-open', open);
+    document.body.classList.toggle('nav-open', open);
     toggle.setAttribute('aria-expanded', open);
-    document.body.style.overflow = open ? 'hidden' : '';
+    toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+  }
+  if (toggle && nav) {
+    toggle.addEventListener('click', function () { setNav(!nav.classList.contains('is-open')); });
+    nav.addEventListener('click', function (e) { if (e.target.closest('a')) setNav(false); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') setNav(false); });
+    window.addEventListener('resize', function () { if (window.innerWidth > 1020) setNav(false); });
+  }
+
+  // bottom bar "Enquire": jump to the form on this page, or go to the contact page
+  $$('[data-enquire]').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      var t = $(a.dataset.enquire) || $('.lead-form');
+      if (!t) return;
+      e.preventDefault();
+      var y = t.getBoundingClientRect().top + window.pageYOffset - 80;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+      var f = t.querySelector('input[name=name]') || (t.matches('.lead-form') && t.querySelector('input[name=name]'));
+      if (f) setTimeout(function () { f.focus({ preventScroll: true }); }, 600);
+    });
   });
+
+  // swipeable gallery counter (phones)
+  var gg = $('.gallery-grid'), gc = $('[data-gallery-count]');
+  if (gg && gc) gg.addEventListener('scroll', function () {
+    var n = gg.children.length, i = Math.round(gg.scrollLeft / gg.clientWidth) + 1;
+    gc.textContent = Math.min(i, n) + ' / ' + n;
+  }, { passive: true });
 
   // hero slider
   var slides = $$('.hero-slide'), copies = $$('[data-slide-copy]'), dots = $$('[data-dot]'), cur = 0, timer;

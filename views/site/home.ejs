@@ -96,7 +96,7 @@
       <div><h2>Handpicked listings</h2><p>Title-checked and ready for a site visit this week.</p></div>
       <a class="link" href="/properties">View all <svg class="ic"><use href="#i-arrow"/></svg></a>
     </div>
-    <div class="grid-3">
+    <div class="grid-3 scroll-m">
       <% featured.forEach(p => { %><%- include('../partials/card', { p }) %><% }) %>
     </div>
   </div>
@@ -153,7 +153,7 @@
 <section class="section section-stone">
   <div class="wrap">
     <div class="section-head"><div><h2>On site and delivered</h2><p>Live progress from the projects we are building.</p></div><a class="link" href="/projects">All projects <svg class="ic"><use href="#i-arrow"/></svg></a></div>
-    <div class="grid-3">
+    <div class="grid-3 scroll-m">
       <% projects.forEach(p => { %><%- include('../partials/projectcard', { p }) %><% }) %>
     </div>
   </div>
@@ -164,7 +164,7 @@
 <section class="section">
   <div class="wrap">
     <h2 class="center">What our clients say</h2>
-    <div class="quotes">
+    <div class="quotes scroll-m">
       <% testimonials.slice(0, 3).forEach(t => { %>
       <figure class="quote">
         <div class="stars" aria-label="<%= t.rating %> out of 5"><% for (let i = 0; i < (Number(t.rating) || 5); i++) { %><svg class="ic"><use href="#i-star"/></svg><% } %></div>
@@ -193,7 +193,7 @@
 <section class="section">
   <div class="wrap">
     <div class="section-head"><div><h2>Guides before you sign</h2></div><a class="link" href="/blog">All articles <svg class="ic"><use href="#i-arrow"/></svg></a></div>
-    <div class="grid-3">
+    <div class="grid-3 scroll-m">
       <% posts.forEach(p => { %><%- include('../partials/postcard', { p }) %><% }) %>
     </div>
   </div>

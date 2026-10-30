@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">
-<link rel="stylesheet" href="/public/css/admin.css?v=3">
+<link rel="stylesheet" href="/public/css/admin.css?v=4">
 </head>
 <body class="admin">
 <%- include('../partials/icons') %>
@@ -48,6 +48,7 @@
     <form method="post" action="/admin/logout"><input type="hidden" name="_csrf" value="<%= csrf %>"><button><svg class="ic"><use href="#i-logout"/></svg><span>Log out</span></button></form>
   </div>
 </aside>
+<div class="side-backdrop" onclick="document.getElementById('side').classList.remove('is-open')"></div>
 <div class="main">
   <header class="topbar">
     <button class="side-toggle" onclick="document.getElementById('side').classList.toggle('is-open')" aria-label="Menu"><svg class="ic"><use href="#i-menu"/></svg></button>

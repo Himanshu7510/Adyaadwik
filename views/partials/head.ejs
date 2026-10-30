@@ -2,7 +2,7 @@
 <html lang="en-IN">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title><%= meta.title %></title>
 <meta name="description" content="<%= meta.description %>">
 <% if (s.keywords) { %><meta name="keywords" content="<%= s.keywords %>"><% } %>
@@ -30,7 +30,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/public/css/site.css?v=4">
+<link rel="stylesheet" href="/public/css/site.css?v=5">
 <style>:root{<% if (s.colorGold) { %>--gold:<%= s.colorGold %>;<% } %><% if (s.colorInk) { %>--ink:<%= s.colorInk %>;<% } %><% if (s.colorPaper) { %>--paper:<%= s.colorPaper %>;<% } %><% if (s.colorStone) { %>--stone:<%= s.colorStone %>;<% } %>}</style>
 <% if (meta.jsonld) { %><script type="application/ld+json"><%- JSON.stringify(meta.jsonld).replace(/</g, '\\u003c') %></script><% } %>
 <script>window.dataLayer=window.dataLayer||[];window.AVY={adsId:<%- JSON.stringify(s.googleAdsId||'') %>,adsLabel:<%- JSON.stringify(s.googleAdsLeadLabel||'') %>,recaptcha:<%- JSON.stringify(s.recaptchaSiteKey||'') %>};</script>

@@ -36,10 +36,11 @@
 <section class="wrap gallery" data-gallery>
   <% if (imgs.length) { %>
   <div class="gallery-grid count-<%= Math.min(imgs.length, 4) %>">
-    <% imgs.slice(0, 4).forEach((src, i) => { %>
-      <button class="g-item" data-open="<%= i %>" aria-label="Open photo <%= i + 1 %>"><img src="<%= src %>" alt="<%= p.title %> photo <%= i + 1 %>" <%= i ? 'loading=lazy' : '' %> onerror="this.onerror=null;this.src='/public/img/placeholder.svg'"><% if (i === 3 && imgs.length > 4) { %><span class="g-more">+<%= imgs.length - 4 %> photos</span><% } %></button>
+    <% imgs.forEach((src, i) => { %>
+      <button class="g-item<%= i > 3 ? ' g-extra' : '' %>" data-open="<%= i %>" aria-label="Open photo <%= i + 1 %>"><img src="<%= src %>" alt="<%= p.title %> photo <%= i + 1 %>" <%= i ? 'loading=lazy' : '' %> onerror="this.onerror=null;this.src='/public/img/placeholder.svg'"><% if (i === 3 && imgs.length > 4) { %><span class="g-more">+<%= imgs.length - 4 %> photos</span><% } %></button>
     <% }) %>
   </div>
+  <% if (imgs.length > 1) { %><span class="gallery-count" data-gallery-count>1 / <%= imgs.length %></span><% } %>
   <dialog class="lightbox" data-lightbox>
     <button class="lb-close" data-close aria-label="Close"><svg class="ic"><use href="#i-x"/></svg></button>
     <button class="lb-prev" data-prev aria-label="Previous"><svg class="ic"><use href="#i-left"/></svg></button>
@@ -98,9 +99,4 @@
   </div>
 </section>
 <% } %>
-<div class="mobile-bar">
-  <% if (s.phone) { %><a href="tel:+<%= h.digits(s.phone) %>" data-track="call"><svg class="ic"><use href="#i-phone"/></svg>Call</a><% } %>
-  <% if (s.whatsapp) { %><a href="https://wa.me/<%= h.digits(s.whatsapp) %>?text=<%= encodeURIComponent(waText) %>" data-track="whatsapp"><svg class="ic"><use href="#i-whatsapp"/></svg>WhatsApp</a><% } %>
-  <a href="#" data-scroll=".detail-side" class="is-primary">Enquire</a>
-</div>
-<%- include('../partials/footer') %>
+<%- include('../partials/footer', { waText, enquire: '.detail-side' }) %>

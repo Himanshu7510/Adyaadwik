@@ -29,13 +29,18 @@
         <a href="<%= m.href %>"<%= active ? ' aria-current=page' : '' %>><%= m.label %></a>
       <% }) %>
       <div class="nav-mobile-extra">
-        <a class="btn btn-gold" href="tel:<%= h.digits(s.phone) ? '+' + h.digits(s.phone) : '' %>"><svg class="ic"><use href="#i-phone"/></svg> <%= s.phone %></a>
+        <div class="nav-mobile-btns">
+          <% if (s.phone) { %><a class="btn btn-ink" href="tel:+<%= h.digits(s.phone) %>" data-track="call"><svg class="ic"><use href="#i-phone"/></svg>Call us</a><% } %>
+          <% if (s.whatsapp) { %><a class="btn btn-wa" href="https://wa.me/<%= h.digits(s.whatsapp) %>" target="_blank" rel="noopener" data-track="whatsapp"><svg class="ic"><use href="#i-whatsapp"/></svg>WhatsApp</a><% } %>
+        </div>
+        <% const cta2 = h.lines(s.headerCta)[0]; if (cta2) { %><a class="btn btn-gold btn-block" href="<%= cta2[1] %>"><%= cta2[0] %></a><% } %>
+        <%- include('social', { cls: 'social-nav' }) %>
       </div>
     </nav>
     <div class="header-actions">
-      <% if (s.phone) { %><a class="header-phone" href="tel:+<%= h.digits(s.phone) %>"><svg class="ic"><use href="#i-phone"/></svg><span><%= s.phone %></span></a><% } %>
+      <% if (s.phone) { %><a class="header-phone" href="tel:+<%= h.digits(s.phone) %>" aria-label="Call <%= s.phone %>" data-track="call"><svg class="ic"><use href="#i-phone"/></svg><span><%= s.phone %></span></a><% } %>
       <% const cta = h.lines(s.headerCta)[0]; if (cta) { %><a class="btn btn-ink btn-sm header-cta" href="<%= cta[1] %>"><%= cta[0] %></a><% } %>
-      <button class="nav-toggle" aria-controls="mainNav" aria-expanded="false" aria-label="Open menu"><svg class="ic"><use href="#i-menu"/></svg></button>
+      <button class="nav-toggle" type="button" aria-controls="mainNav" aria-expanded="false" aria-label="Open menu"><svg class="ic ic-open"><use href="#i-menu"/></svg><svg class="ic ic-close"><use href="#i-x"/></svg></button>
     </div>
   </div>
 </header>

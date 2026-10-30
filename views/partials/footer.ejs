@@ -38,12 +38,22 @@
   </div>
 </footer>
 
+<%
+  const waMsg = locals.waText || ('Hi ' + s.siteName + ', I would like to know more.');
+  const enquire = locals.enquire || '#enquire';
+%>
+<nav class="mobile-bar" aria-label="Quick contact">
+  <% if (s.phone) { %><a href="tel:+<%= h.digits(s.phone) %>" data-track="call"><svg class="ic"><use href="#i-phone"/></svg><span>Call</span></a><% } %>
+  <% if (s.whatsapp) { %><a href="https://wa.me/<%= h.digits(s.whatsapp) %>?text=<%= encodeURIComponent(waMsg) %>" target="_blank" rel="noopener" data-track="whatsapp"><svg class="ic"><use href="#i-whatsapp"/></svg><span>WhatsApp</span></a><% } %>
+  <a href="/contact" class="is-primary" data-enquire="<%= enquire %>"><svg class="ic"><use href="#i-mail"/></svg><span>Enquire</span></a>
+</nav>
+
 <div class="float-actions">
   <% if (s.whatsapp) { %><a class="float-wa" data-track="whatsapp" href="https://wa.me/<%= h.digits(s.whatsapp) %>?text=<%= encodeURIComponent('Hi ' + s.siteName + ', I would like to know more.') %>" target="_blank" rel="noopener" aria-label="Chat on WhatsApp"><svg class="ic"><use href="#i-whatsapp"/></svg></a><% } %>
   <% if (s.phone) { %><a class="float-call" data-track="call" href="tel:+<%= h.digits(s.phone) %>" aria-label="Call us"><svg class="ic"><use href="#i-phone"/></svg></a><% } %>
 </div>
 
-<script src="/public/js/site.js?v=4" defer></script>
+<script src="/public/js/site.js?v=5" defer></script>
 <% if (s.linkedinPartnerId) { %><noscript><img height="1" width="1" style="display:none" alt="" src="https://px.ads.linkedin.com/collect/?pid=<%= s.linkedinPartnerId %>&fmt=gif"></noscript><% } %>
 <%- s.customBodyEnd || '' %>
 </body>

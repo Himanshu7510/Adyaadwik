@@ -200,3 +200,32 @@ button.media-item { cursor: pointer; } button.media-item:hover { border-color: v
 .login-card h1 { font-family: var(--serif); font-size: 1.6rem; text-align: center; margin: 0 0 4px; }
 .login-card .alert { margin: 0; }
 .f { display: grid; gap: 6px; font-weight: 600; font-size: .88rem; }
+
+/* admin on phones */
+@media (max-width: 900px) {
+  .fld input:not([type=checkbox]):not([type=color]):not([type=file]), .fld select, .fld textarea, .f input, .search input, .toolbar select { font-size: 16px; }
+  .panel { padding: 18px 16px; border-radius: 10px; }
+  .kpis { gap: 10px; }
+  .kpi { padding: 14px 16px; }
+  .kpi strong { font-size: 2.1rem; }
+  .imgfield { grid-template-columns: 88px 1fr; gap: 12px; }
+  .imgprev { width: 88px; }
+  .savebar { padding: 12px 0 calc(12px + env(safe-area-inset-bottom)); }
+  .savebar .b { flex: 1; min-height: 46px; }
+  .tabs { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+  .tabs a { flex: none; }
+  .topbar-actions .b { padding: 9px 12px; }
+  .dl { grid-template-columns: 1fr; gap: 2px; }
+  .dl dd { margin-bottom: 10px; }
+  .by-type { grid-template-columns: 1fr 1fr; }
+  .bars { gap: 3px; }
+  .side-toggle { width: 44px; height: 44px; }
+  .side a, .side button { padding: 11px 12px; }
+  .main.side-open-overlay::before { content: ""; }
+  .search { min-width: 0; flex: 1 1 100%; }
+  .td-thumb, .th-thumb { display: none; }
+}
+.side-backdrop { display: none; }
+@media (max-width: 900px) {
+  .side.is-open + .side-backdrop { display: block; position: fixed; inset: 0; background: rgba(30,18,10,.45); z-index: 19; }
+}
